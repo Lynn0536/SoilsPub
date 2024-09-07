@@ -1,0 +1,25 @@
+Soil Data Manipulations 
+Outside of R 
+
+Diary: 
+
+09.05.2023: Created a column based on which sampling event each soil collection was. 1 = Year 1 (2022) 2 = Year 2 (2023) 
+            Converted Sample ID numbers into individual treatment levels and replaced 0 with "No" and 1 with "Yes" 
+
+09.07.2024: 
+
+'Treatment' column - I manually removed the Diaspore portion of the cleared + scraped + diaspore + burned treatment. So now just C + S + B. This was because it would be confusing to explain in the manuscript WHY this treatment had to include diaspore as well. The cleared + scraped only burned if diaspore was present and not if it wasn't. But unlikely the diaspore has any other influence on soil characteristics and, as mentioned, the explanation would be confusing to readers. 
+            
+Bulk Density was calculated outside of R as well. Formula = Bulk density (g/cm3) = Dry soil weight (g) / Soil volume (cm3). Once this was calculated, the 'volume' column and 'dry weight' columns were removed.
+
+pHb column was removed (not needed because there is already a pHw 
+
+All BS_x columns were also removed (Base Saturation columns = 5 columns).
+
+After conversation with Daniel Irick (no date?) he said to remove Total_C and am going to remove Total_OM as well just use OM instead because that was the original research question. 
+
+Created a UniqueID column as well (numbers 1- 283) for each row of data. 
+
+Final dataset (stored as EPA_Soil_Clean) includes 238 rows and 15 response variables. 
+
+
