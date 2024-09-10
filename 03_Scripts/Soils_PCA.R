@@ -45,7 +45,7 @@ Soil_corr_matrix <- cor(Soil_Norm)
 ggcorrplot(Soil_corr_matrix)
 
 ######## Step 3: Applying PCA ######################################
-
+set.seed(05151986)
 PCA_Data_1 <- princomp(Soil_Norm)
 summary(PCA_Data_1)
 Zscores <- PCA_Data_1$scores
@@ -104,6 +104,9 @@ JoinedData <- left_join(SoilsData, Scores, by = "UniqueID")
 
 JoinedData <- JoinedData %>%
   select(UniqueID, Site, Treatment, Position, Year, Comp.1, Comp.2)
+
+JoinedData <- JoinedData %>%
+  mutate(Year = as_factor(Year)) 
 
 ## 10.3 - Create column called VAR in the Loadings data frame 
 
@@ -199,8 +202,8 @@ TREATMENT <- ggplot(data=JoinedData) +
         axis.text.x = element_text(size=12), 
         axis.title = element_text(size=14),
         legend.title = element_text(size=12),
-        legend.position=c(0.95,0.01),
-        legend.justification=c("right", "bottom"),
+        legend.position=c(0.95,0.95),
+        legend.justification=c("right", "top"),
         legend.direction="vertical") +
   geom_vline(xintercept = 0) +
   geom_hline(yintercept = 0)
