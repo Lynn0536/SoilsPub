@@ -83,6 +83,7 @@ SoilsData <- RawData %>%
 summary(SoilsData)   
 str(SoilsData)
 
+########################### TOTAL N ###########################################
 ############ Visualize the Total_N Data ##### Decide on Outliers NOW ##########
 
 # Original Data 
@@ -284,6 +285,8 @@ hist(simulateResiduals(KMod2)) ## histogram should be flat
 qqPlot(resid(KMod2))  ## residuals should line up pretty closely to the blue line
 hist(residuals(KMod2))
 plot(fitted(KMod2), residuals(KMod2))
+
+Anova(ClMod2, type="III")
 
 ##################### SKIP Cl for NOW ##########################################
 ## May need to round values and use a poisson distribution #####################
@@ -528,7 +531,7 @@ ggplot(SoilsData, aes(x=log(S))) +
 ggplot(SoilsData, aes(x=sqrt(S))) +
   geom_histogram()
 
-ggplot(SoilsData, aes(x=Treatment, y=S, fill=Position)) + 
+ggplot(SoilsData, aes(x=Treatment, y=S)) + 
   geom_boxplot(notch=TRUE)
 
 SMod2 <- glmmTMB(log(S) ~ Treatment * Position * Year + (1|Site) + 
@@ -571,6 +574,186 @@ CI_Letters_S <- cld(PairsSMod, Letters=letters, sort=TRUE, decreasing=TRUE)
 PairSMod2 <- emmeans(SMod2, ~Year, type='response') 
 pairs(PairSMod2)
 CI_Letters_S2 <- cld(PairSMod2, Letters=letters, sort=TRUE, decreasing=TRUE)
+
+
+############################### Fe #####################################
+
+############ Visualize the Fe Data ##### Decide on Outliers NOW ##########
+
+# Original Data 
+ggplot(SoilsData, aes(x=Fe)) +
+  geom_histogram()
+
+# log-transformed data 
+ggplot(SoilsData, aes(x=log(Fe))) +
+  geom_histogram()
+
+# sqrt transformed data 
+ggplot(SoilsData, aes(x=sqrt(Fe))) +
+  geom_histogram()
+
+ggplot(SoilsData, aes(x=Treatment, y=Fe, fill=Position)) + 
+  geom_boxplot(notch=TRUE)
+
+# log-transformed data did produce the most normal data distribution, but will 
+# test both model formulas to see which had the best fit with respect to residuals 
+
+FeMod2 <- glmmTMB(log(Fe) ~ Treatment * Position * Year + (1|Site) + 
+                   (1|Site:Treatment) + (1|Site:Treatment:Position), 
+                 data=SoilsData, family=gaussian())
+
+# Now look at the residuals 
+plot(simulateResiduals(FeMod2))
+hist(simulateResiduals(FeMod2)) ## histogram should be flat
+qqPlot(resid(FeMod2))  ## residuals should line up pretty closely to the blue line
+hist(residuals(FeMod2))
+plot(fitted(FeMod2), residuals(FeMod2))
+
+FeMod3 <- glmmTMB(Fe ~ Treatment * Position * Year + (1|Site) + 
+                   (1|Site:Treatment) + (1|Site:Treatment:Position), 
+                 data=SoilsData, family=gaussian()) # this model did not converge 
+
+########################### Fe Model Results ###################################
+
+Anova(FeMod2, type="III")
+
+# 3-way interaction effect between Treatment , Position , and Year 
+
+# Pairwise Treatment 
+PairsFeMod <- emmeans(FeMod2, ~Treatment | Position | Year, type='response') 
+pairs(PairsFeMod)
+CI_Letters_Fe <- cld(PairsFeMod, Letters=letters, sort=TRUE, decreasing=TRUE)
+
+
+############################### Na #####################################
+
+############ Visualize the Na Data ##### Decide on Outliers NOW ##########
+
+# Original Data 
+ggplot(SoilsData, aes(x=Na)) +
+  geom_histogram()
+
+# log-transformed data 
+ggplot(SoilsData, aes(x=log(Na))) +
+  geom_histogram()
+
+# sqrt transformed data 
+ggplot(SoilsData, aes(x=sqrt(Na))) +
+  geom_histogram()
+
+ggplot(SoilsData, aes(x=Treatment, y=Na, fill=Position)) + 
+  geom_boxplot(notch=TRUE)
+
+
+# log-transformed data did produce the most normal data distribution, but will 
+# test both model formulas to see which had the best fit with respect to residuals 
+
+
+NaMod3 <- glmmTMB(Na ~ Treatment * Position * Year + (1|Site) + 
+                   (1|Site:Treatment) + (1|Site:Treatment:Position), 
+                 data=SoilsData, family=gaussian())
+
+# Now look at the residuals 
+plot(simulateResiduals(NaMod3))
+hist(simulateResiduals(NaMod3)) ## histogram should be flat
+qqPlot(resid(NaMod3))  ## residuals should line up pretty closely to the blue line
+hist(residuals(NaMod3))
+plot(fitted(NaMod3), residuals(NaMod3))
+
+# The above model without log transformation did converge but the residuals do not 
+# look good. Now will try the same model with the data log transformed 
+
+NaMod2 <- glmmTMB(log(Na) ~ Treatment * Position * Year + (1|Site) + 
+                    (1|Site:Treatment) + (1|Site:Treatment:Position), 
+                  data=SoilsData, family=gaussian())
+
+# Now look at the residuals 
+plot(simulateResiduals(NaMod2))
+hist(simulateResiduals(NaMod2)) ## histogram should be flat
+qqPlot(resid(NaMod2))  ## residuals should line up pretty closely to the blue line
+hist(residuals(NaMod2))
+plot(fitted(NaMod2), residuals(NaMod2))
+
+# Log transformation greatly improved model fit 
+
+########################### Na Model Results ###################################
+
+Anova(NaMod2, type="III")
+
+# 3-way interaction effect between Treatment , Position , and Year 
+
+# Pairwise Treatment 
+PairsNaMod <- emmeans(NaMod2, ~Treatment | Position | Year, type='response') 
+pairs(PairsNaMod)
+CI_Letters_Na <- cld(PairsNaMod, Letters=letters, sort=TRUE, decreasing=TRUE)
+
+############################### OM #####################################
+
+############ Visualize the OM Data ##### Decide on Outliers NOW ##########
+
+# Original Data 
+ggplot(SoilsData, aes(x=OM)) +
+  geom_histogram()
+
+# log-transformed data 
+ggplot(SoilsData, aes(x=log(OM))) +
+  geom_histogram()
+
+# sqrt transformed data 
+ggplot(SoilsData, aes(x=sqrt(OM))) +
+  geom_histogram()
+
+ggplot(SoilsData, aes(x=Treatment, y=OM, fill=Position)) + 
+  geom_boxplot(notch=TRUE)
+
+# log-transformed data did produce the most normal data distribution, but will 
+# test both model formulas to see which had the best fit with respect to residuals 
+
+
+OMMod3 <- glmmTMB(OM ~ Treatment * Position * Year + (1|Site) + 
+                    (1|Site:Treatment) + (1|Site:Treatment:Position), 
+                  data=SoilsData, family=gaussian())
+
+# Now look at the residuals 
+plot(simulateResiduals(OMMod3))
+hist(simulateResiduals(OMMod3)) ## histogram should be flat
+qqPlot(resid(OMMod3))  ## residuals should line up pretty closely to the blue line
+hist(residuals(OMMod3))
+plot(fitted(OMMod3), residuals(OMMod3))
+
+# The above model without log transformation did converge but the residuals do not 
+# look good (they actually look terrible!). Now will try the same model with the data 
+# log transformed.
+
+OMMod2 <- glmmTMB(log(OM) ~ Treatment * Position * Year + (1|Site) + 
+                    (1|Site:Treatment) + (1|Site:Treatment:Position), 
+                  data=SoilsData, family=gaussian())
+
+# Now look at the residuals 
+plot(simulateResiduals(OMMod2))
+hist(simulateResiduals(OMMod2)) ## histogram should be flat
+qqPlot(resid(OMMod2))  ## residuals should line up pretty closely to the blue line
+hist(residuals(OMMod2))
+plot(fitted(OMMod2), residuals(OMMod2))
+
+# Log transformation greatly improved model fit 
+
+########################### OM Model Results ###################################
+
+Anova(OMMod2, type="III")
+
+# Only Treatment and Position Significant (No sig.interaction effects)
+
+# Pairwise Treatment 
+PairsOMMod_TRT <- emmeans(OMMod2, ~Treatment, type='response') 
+pairs(PairsOMMod_TRT)
+CI_Letters_OM_TRT <- cld(PairsOMMod_TRT, Letters=letters, sort=TRUE, decreasing=TRUE)
+
+# Pairwise Position
+PairsOMMod_POS <- emmeans(OMMod2, ~Position, type='response') 
+pairs(PairsOMMod_POS)
+CI_Letters_OM_POS <- cld(PairsOMMod_POS, Letters=letters, sort=TRUE, decreasing=TRUE)
+
 
 
 
