@@ -218,3 +218,255 @@ FigX <- plot_grid(Box_Mg, Box_Ca, Box_CEC, Box_S, Box_OM,
 FigXB <- add_sub(FigX, "Treatment", hjust=0.1)
 
 ggdraw(FigXDP)  
+
+
+########################### Treatment x Year ####################################
+################## Total_N ######################################################
+
+## Remove row if there is an NA Value in the "Total_N" column 
+TNData <- SoilsData %>%
+  drop_na(Total_N) %>%
+  mutate(Treatment = fct_relevel(Treatment, "Control", "Cleared", "Cleared + Burned",
+                                 "Cleared + Scraped", "Cleared + Scraped + Burned"))
+
+TN_Summary <- summarySE(TNData, measurevar="Total_N", groupvars=c("Treatment", "Year")) %>%
+  mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
+                       Year == '2023' ~ '1-Year Post Treatment (2023)',
+                       Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
+  mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
+                            "2-Years Post Treatment (2024)"))
+
+TN <- ggplot(TN_Summary, aes(x=Time, y=Total_N, group = Treatment, color=Treatment))+ 
+    geom_errorbar(aes(ymin=Total_N-se, ymax=Total_N+se), width=.2, 
+                  position=position_dodge(0.0)) +
+    geom_line(linewidth=1) + 
+    geom_point(aes(shape=Treatment), size=4)+
+    labs(x="Time", y = "Total N (units)")+
+    theme_classic() + 
+    scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
+    scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
+    theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.text = element_text(size = 11),
+        axis.text.x = element_blank(), 
+        axis.title.y = element_text(size = 11),
+        axis.title.x = element_blank(),
+        legend.title = element_text(size=14),
+        legend.position="none") 
+  
+  
+################## Total_P ######################################################  
+TPData <- SoilsData %>%
+  drop_na(Total_P) %>%
+  mutate(Treatment = fct_relevel(Treatment, "Control", "Cleared", "Cleared + Burned",
+                                 "Cleared + Scraped", "Cleared + Scraped + Burned"))
+
+TP_Summary <- summarySE(TPData, measurevar="Total_P", groupvars=c("Treatment", "Year")) %>%
+  mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
+                          Year == '2023' ~ '1-Year Post Treatment (2023)',
+                          Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
+  mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
+                            "2-Years Post Treatment (2024)"))
+
+TP <- ggplot(TP_Summary, aes(x=Time, y=Total_P, group = Treatment, color=Treatment))+ 
+  geom_errorbar(aes(ymin=Total_P-se, ymax=Total_P+se), width=.2, 
+                position=position_dodge(0.0)) +
+  geom_line(linewidth=1) + 
+  geom_point(aes(shape=Treatment), size=4)+
+  labs(x="Time", y = "Total P (units)")+
+  theme_classic() + 
+  scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
+  scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
+  theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.text = element_text(size = 11),
+        axis.text.x = element_blank(), 
+        axis.title.y = element_text(size = 11),
+        axis.title.x = element_blank(),
+        legend.title = element_text(size=14),
+        legend.position=c(0.7,0.8)) 
+
+
+################## Total_K ######################################################  
+TKData <- SoilsData %>%
+  drop_na(Total_K) %>%
+  mutate(Treatment = fct_relevel(Treatment, "Control", "Cleared", "Cleared + Burned",
+                                 "Cleared + Scraped", "Cleared + Scraped + Burned"))
+
+TK_Summary <- summarySE(TPData, measurevar="Total_K", groupvars=c("Treatment", "Year")) %>%
+  mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
+                          Year == '2023' ~ '1-Year Post Treatment (2023)',
+                          Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
+  mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
+                            "2-Years Post Treatment (2024)"))
+
+TK <- ggplot(TK_Summary, aes(x=Time, y=Total_K, group = Treatment, color=Treatment))+ 
+  geom_errorbar(aes(ymin=Total_K-se, ymax=Total_K+se), width=.2, 
+                position=position_dodge(0.0)) +
+  geom_line(linewidth=1) + 
+  geom_point(aes(shape=Treatment), size=4)+
+  labs(x="Time", y = "Total K (units)")+
+  theme_classic() + 
+  scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
+  scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
+  theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.text = element_text(size = 11),
+        axis.text.x = element_blank(), 
+        axis.title.y = element_text(size = 11),
+        axis.title.x = element_blank(),
+        legend.title = element_text(size=14),
+        legend.position="none") 
+
+################## Cl ######################################################  
+ClData <- SoilsData %>%
+  drop_na(Cl) %>%
+  mutate(Treatment = fct_relevel(Treatment, "Control", "Cleared", "Cleared + Burned",
+                                 "Cleared + Scraped", "Cleared + Scraped + Burned"))
+
+Cl_Summary <- summarySE(ClData, measurevar="Cl", groupvars=c("Treatment", "Year")) %>%
+  mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
+                          Year == '2023' ~ '1-Year Post Treatment (2023)',
+                          Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
+  mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
+                            "2-Years Post Treatment (2024)"))
+
+Cl <- ggplot(Cl_Summary, aes(x=Time, y=Cl, group = Treatment, color=Treatment))+ 
+  geom_errorbar(aes(ymin=Cl-se, ymax=Cl+se), width=.2, 
+                position=position_dodge(0.0)) +
+  geom_line(linewidth=1) + 
+  geom_point(aes(shape=Treatment), size=4)+
+  labs(x="Time", y = "Cl (units)")+
+  theme_classic() + 
+  scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
+  scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
+  scale_x_discrete(labels = function(x) 
+    stringr::str_wrap(x, width = 15))+
+  theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.text = element_text(size = 11),
+        axis.text.x = element_text(size = 10), 
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(size= 11),
+        legend.title = element_text(size=14),
+        legend.position="none") 
+
+################## Bulk Density  ######################################################  
+BDData <- SoilsData %>%
+  drop_na(BulkDensity) %>%
+  mutate(Treatment = fct_relevel(Treatment, "Control", "Cleared", "Cleared + Burned",
+                                 "Cleared + Scraped", "Cleared + Scraped + Burned"))
+
+BD_Summary <- summarySE(BDData, measurevar="BulkDensity", groupvars=c("Treatment", "Year")) %>%
+  mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
+                          Year == '2023' ~ '1-Year Post Treatment (2023)',
+                          Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
+  mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
+                            "2-Years Post Treatment (2024)"))
+
+BD <- ggplot(BD_Summary, aes(x=Time, y=BulkDensity, group = Treatment, color=Treatment))+ 
+  geom_errorbar(aes(ymin=BulkDensity-se, ymax=BulkDensity+se), width=.2, 
+                position=position_dodge(0.0)) +
+  geom_line(linewidth=1) + 
+  geom_point(aes(shape=Treatment), size=4)+
+  labs(x="Time", y = "Bulk Density (units)")+
+  theme_classic() + 
+  scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
+  scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
+  scale_x_discrete(labels = function(x) 
+    stringr::str_wrap(x, width = 15))+
+  theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.text = element_text(size = 11),
+        axis.text.x = element_text(size = 10), 
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(size= 11),
+        legend.title = element_text(size=14),
+        legend.position="none") 
+
+################## pH  ######################################################  
+pHData <- SoilsData %>%
+  drop_na(pHw) %>%
+  mutate(Treatment = fct_relevel(Treatment, "Control", "Cleared", "Cleared + Burned",
+                                 "Cleared + Scraped", "Cleared + Scraped + Burned"))
+
+pH_Summary <- summarySE(pHData, measurevar="pHw", groupvars=c("Treatment", "Year")) %>%
+  mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
+                          Year == '2023' ~ '1-Year Post Treatment (2023)',
+                          Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
+  mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
+                            "2-Years Post Treatment (2024)"))
+
+pH <- ggplot(pH_Summary, aes(x=Time, y=pHw, group = Treatment, colour=Treatment))+ 
+  geom_errorbar(aes(ymin=pHw-se, ymax=pHw+se), width=.2, 
+                position=position_dodge(0.0)) +
+  geom_line(linewidth=1) + 
+  geom_point(aes(shape=Treatment), size=4)+
+  labs(x="Time", y = "pH")+
+  theme_classic() + 
+  scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
+  scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
+  scale_x_discrete(labels = function(x) 
+    stringr::str_wrap(x, width = 15))+
+  theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.text = element_text(size = 11),
+        axis.text.x = element_text(size = 10), 
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(size= 11),
+        legend.title = element_text(size=14),
+        legend.position="none") 
+
+scale_x_discrete(labels = function(x) 
+  stringr::str_wrap(x, width = 15))+
+
+
+
+FigX2 <- plot_grid(TN, TP, TK, Cl, BD, pH,
+                  hjust=-7, nrow=2, label_size = 14)
+
+FigX2B <- add_sub(FigX2, "Time", hjust=0.1)
+
+ggdraw(FigX2B)  
+
+
+# arrange the six plots in 3 rows
+prow <- plot_grid(
+  TN + theme(legend.position="none"),
+  TP + theme(legend.position=c(0.7,0.8)),
+  TK + theme(legend.position="none"),
+  Cl + theme(legend.position="none"),
+  BD + theme(legend.position="none"),
+  pH + theme(legend.position="none"),
+    align = 'vh',
+  labels = c("A", "B", "C","D","E","F"),
+  hjust = -1,
+  nrow = 2
+)
+prow
+
+
+# extract the legend from one of the plots
+legend <- get_legend(
+  # create some space to the left of the legend
+  TN 
+)
+
+# add the legend to the row we made earlier. Give it one-third of 
+# the width of one plot (via rel_widths).
+plot_grid(prow, legend, rel_widths = c(3, .4))
+
+
+
