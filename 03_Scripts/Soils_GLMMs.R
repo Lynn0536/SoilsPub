@@ -151,6 +151,12 @@ PairsNMod <- emmeans(NMod2, ~Treatment, type='response')
 pairs(PairsNMod)
 CI_Letters_Rich <- cld(PairsNMod, Letters=letters, sort=TRUE, decreasing=TRUE)
 
+# Pairwise Position X Year 
+PairsNMod_2 <- emmeans(NMod2, ~Position*Year, type='response') 
+pairs(PairsNMod_2)
+CI_Letters_2 <- cld(PairsNMod_2, Letters=letters, sort=TRUE, decreasing=TRUE)
+
+
 ############ Visualize the Total_P Data ##### Decide on Outliers NOW ##########
 
 # Original Data 
@@ -210,6 +216,11 @@ PairsPMod <- emmeans(PMod2, ~Treatment|Year, type='response')
 pairs(PairsPMod)
 CI_Letters <- cld(PairsPMod, Letters=letters, sort=TRUE, decreasing=TRUE)
 
+# Pairwise Position x Year 
+PairsPMod_2 <- emmeans(PMod2, ~Position*Year, type='response') 
+pairs(PairsPMod_2)
+CI_Letters_3 <- cld(PairsPMod_2, Letters=letters, sort=TRUE, decreasing=TRUE)
+
 ############################### TOTAL K #####################################
 
 ############ Visualize the Total_K Data ##### Decide on Outliers NOW ##########
@@ -253,6 +264,11 @@ Anova(KMod2, type="III")
 PairsKMod <- emmeans(KMod2, ~Treatment|Position, type='response') 
 pairs(PairsKMod)
 CI_Letters_Rich <- cld(PairsKMod, Letters=letters, sort=TRUE, decreasing=TRUE)
+
+# Pairwise Position X Year 
+PairsKMod_2 <- emmeans(KMod2, ~Position*Year, type='response') 
+pairs(PairsKMod_2)
+CI_Letters_TK_2 <- cld(PairsKMod_2, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 
 ############################### Cl #####################################
@@ -620,10 +636,9 @@ Anova(FeMod2, type="III")
 # 3-way interaction effect between Treatment , Position , and Year 
 
 # Pairwise Treatment 
-PairsFeMod <- emmeans(FeMod2, ~Treatment | Position | Year, type='response') 
+PairsFeMod <- emmeans(FeMod2, ~Treatment * Year | Position, type='response') 
 pairs(PairsFeMod)
 CI_Letters_Fe <- cld(PairsFeMod, Letters=letters, sort=TRUE, decreasing=TRUE)
-
 
 ############################### Na #####################################
 

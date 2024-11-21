@@ -22,7 +22,7 @@ SoilsData <- RawData %>%
   filter(Treatment != "Burned") %>%
   filter(Treatment != "Scraped + Burned")
 
-
+#################### Treatment Main Effect Significant ##########################
 ################## Mg ###########################################################
 ## Remove row if there is an NA Value in the "Mg" column 
 MgData <- SoilsData %>%
@@ -429,20 +429,7 @@ pH <- ggplot(pH_Summary, aes(x=Time, y=pHw, group = Treatment, colour=Treatment)
         legend.title = element_text(size=14),
         legend.position="none") 
 
-scale_x_discrete(labels = function(x) 
-  stringr::str_wrap(x, width = 15))+
-
-
-
-FigX2 <- plot_grid(TN, TP, TK, Cl, BD, pH,
-                  hjust=-7, nrow=2, label_size = 14)
-
-FigX2B <- add_sub(FigX2, "Time", hjust=0.1)
-
-ggdraw(FigX2B)  
-
-
-# arrange the six plots in 3 rows
+# arrange the six plots in 2 rows
 prow <- plot_grid(
   TN + theme(legend.position="none"),
   TP + theme(legend.position=c(0.7,0.8)),
@@ -457,16 +444,133 @@ prow <- plot_grid(
 )
 prow
 
+################## Treatment x Position X Year #################################
+########################### Fe #################################################
+FeData <- SoilsData %>%
+  drop_na(Fe)
 
-# extract the legend from one of the plots
-legend <- get_legend(
-  # create some space to the left of the legend
-  TN 
-)
+Fe_Summary <- summarySE(FeData, measurevar="Fe", groupvars=c("Treatment","Position", "Year")) %>%
+  mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
+                          Year == '2023' ~ '1-Year Post Treatment (2023)',
+                          Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
+  mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
+                            "2-Years Post Treatment (2024)")) %>%
+  mutate(TRT = case_when(Treatment == 'Control' ~ 'Control',
+                         Treatment == 'Cleared' ~ 'C',
+                         Treatment == 'Cleared + Burned' ~ 'C + B',
+                         Treatment == 'Cleared + Scraped' ~ 'C + S',
+                         Treatment == 'Cleared + Scraped + Burned' ~ 'C + S + B',
+                         Treatment == 'Reference' ~ 'Reference')) %>%
+  mutate(TRT = fct_relevel(TRT, "Control", "C", "C + B",
+                                 "C + S", "C + S + B"))
 
-# add the legend to the row we made earlier. Give it one-third of 
-# the width of one plot (via rel_widths).
-plot_grid(prow, legend, rel_widths = c(3, .4))
+Fe_Summary <- Fe_Summary %>%
+    mutate(Letters = c("abcde","abcde","abc","ab","ab","ab","abcde","abcde","abcd","ab","ab","ab", "abcde",
+                       "abcde", "abcde", "ab", "ab", "ab", "de", "bcde", "de", "b", "ab", "a", 
+                       "e", "de", "cde", "ab", "ab", "ab", "ab", "a", "a", "ab", "ab", "ab"))
 
+ggplot(Fe_Summary, aes(x=TRT, y=Fe, group=Time)) +
+  geom_col(aes(fill=Time),position = "dodge") + 
+  geom_errorbar(aes(ymin=Fe-se, ymax=Fe+se), width=.3, position=position_dodge(0.9)) +
+  geom_text(aes(y=Fe+se+6, label=Letters), position=position_dodge(0.9)) +
+  scale_fill_manual(values=c("lightcyan",'lightblue3','lightcyan4')) +
+  xlab("Restoration Treatment") +
+  ylab("Fe (units)") +
+  theme_bw() +
+  theme(panel.border = element_rect(color="black", fill=NA, size=1), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.text.y = element_text(size = 16),
+        axis.text.x = element_text(size = 14), 
+        axis.title.x = element_text(size = 16, vjust = -1),
+        axis.title.y = element_text(size = 16, vjust = +3),
+        legend.title=element_text(size=12), 
+        legend.text=element_text(size=12)) +
+  facet_wrap(~factor(Position, c("Upper", "Bottom"))) +
+  theme(strip.text = element_text(size=12))
+
+
+
+# Condition X Depth #### Woody / Graminoid / Forb ##############################
+figDATA <- CleanData %>%
+  dplyr::filter(!Group=="NN") %>%
+  dplyr::group_by(Site, Site_Condition, Group, Depth) %>%
+  dplyr::summarize(Sum = sum(No_of_Individuals))
+
+# bar graph with mean + SE bars 
+figDATA2 <- summarySE(figDATA, measurevar="Sum", groupvars=c("Group","Site_Condition","Depth")) 
+
+figDATA2 <- figDATA2 %>%
+  dplyr::mutate(Depth = case_when(Depth == '1' ~ '1-Surface',
+                                  Depth == '2' ~ '2-Mineral Soil')) %>%
+  dplyr::mutate(Letters = c("a","b","b","b","a","b","b","b","b","b","a","b"))
+
+ggplot(figDATA2, aes(x=Depth, y=Sum, group=Site_Condition)) +
+  geom_col(aes(fill=Site_Condition),position = "dodge") + 
+  geom_errorbar(aes(ymin=Sum-se, ymax=Sum+se), width=.3, position=position_dodge(0.9)) +
+  geom_text(aes(y=Sum+se+3, label=Letters), position=position_dodge(0.9)) +
+  scale_fill_manual(values=c('lightblue2','grey44')) +
+  xlab("Sample Depth") +
+  ylab("Mean Seedling Emergence") +
+  theme_bw() +
+  theme(panel.border = element_rect(color="black", fill=NA, size=1), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.text.y = element_text(size = 16),
+        axis.text.x = element_text(size = 14), 
+        axis.title.x = element_text(size = 16, vjust = -1),
+        axis.title.y = element_text(size = 16, vjust = +3),
+        legend.title=element_text(size=12), 
+        legend.text=element_text(size=12)) +
+  facet_wrap(~factor(Group, c("Woody", "Forb", "Graminoid"))) +
+  theme(strip.text = element_text(size=12))
+
+
+
+
+
+########################### Position x Year  ####################################
+##### Total_N # Total_P # Total_K Only ##########################################
+########## Table for this rather than figure ####################################
+
+TNData <- SoilsData %>%
+  drop_na(Total_N) %>%
+  mutate(Treatment = fct_relevel(Treatment, "Control", "Cleared", "Cleared + Burned",
+                                 "Cleared + Scraped", "Cleared + Scraped + Burned"))
+
+TN_Pos_Year_Summary <- summarySE(TNData, measurevar="Total_N", groupvars=c("Position", "Year")) %>%
+  mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
+                          Year == '2023' ~ '1-Year Post Treatment (2023)',
+                          Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
+  mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
+                            "2-Years Post Treatment (2024)"))
+
+
+TPData <- SoilsData %>%
+  drop_na(Total_P) %>%
+  mutate(Treatment = fct_relevel(Treatment, "Control", "Cleared", "Cleared + Burned",
+                                 "Cleared + Scraped", "Cleared + Scraped + Burned"))
+
+TP_Pos_Year_Summary <- summarySE(TPData, measurevar="Total_P", groupvars=c("Position", "Year")) %>%
+  mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
+                          Year == '2023' ~ '1-Year Post Treatment (2023)',
+                          Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
+  mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
+                            "2-Years Post Treatment (2024)"))
+
+
+TKData <- SoilsData %>%
+  drop_na(Total_K) %>%
+  mutate(Treatment = fct_relevel(Treatment, "Control", "Cleared", "Cleared + Burned",
+                                 "Cleared + Scraped", "Cleared + Scraped + Burned"))
+
+TK_Pos_Year_Summary <- summarySE(TKData, measurevar="Total_K", groupvars=c("Position", "Year")) %>%
+  mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
+                          Year == '2023' ~ '1-Year Post Treatment (2023)',
+                          Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
+  mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
+                            "2-Years Post Treatment (2024)"))
 
 
