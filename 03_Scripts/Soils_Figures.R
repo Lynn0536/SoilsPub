@@ -491,7 +491,6 @@ ggplot(Fe_Summary, aes(x=TRT, y=Fe, group=Time)) +
   theme(strip.text = element_text(size=12))
 
 
-
 # Condition X Depth #### Woody / Graminoid / Forb ##############################
 figDATA <- CleanData %>%
   dplyr::filter(!Group=="NN") %>%
