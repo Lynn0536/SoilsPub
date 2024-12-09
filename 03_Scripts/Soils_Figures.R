@@ -136,7 +136,7 @@ Box_CEC <- ggplot(CECData, aes(Treatment, CEC, fill=Treatment)) +
         legend.position="none") 
   #coord_flip()
 
-############################# S ###############################################
+############################# S #################################################
 ## Remove row if there is an NA Value in the "S" column 
 SData <- SoilsData %>%
   drop_na(S) %>%
@@ -490,28 +490,37 @@ ggplot(Fe_Summary, aes(x=TRT, y=Fe, group=Time)) +
   facet_wrap(~factor(Position, c("Upper", "Bottom"))) +
   theme(strip.text = element_text(size=12))
 
+########################### Na #################################################
+NaData <- SoilsData %>%
+  drop_na(Na)
 
-# Condition X Depth #### Woody / Graminoid / Forb ##############################
-figDATA <- CleanData %>%
-  dplyr::filter(!Group=="NN") %>%
-  dplyr::group_by(Site, Site_Condition, Group, Depth) %>%
-  dplyr::summarize(Sum = sum(No_of_Individuals))
+Na_Summary <- summarySE(NaData, measurevar="Na", groupvars=c("Treatment","Position", "Year")) %>%
+  mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
+                          Year == '2023' ~ '1-Year Post Treatment (2023)',
+                          Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
+  mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
+                            "2-Years Post Treatment (2024)")) %>%
+  mutate(TRT = case_when(Treatment == 'Control' ~ 'Control',
+                         Treatment == 'Cleared' ~ 'C',
+                         Treatment == 'Cleared + Burned' ~ 'C + B',
+                         Treatment == 'Cleared + Scraped' ~ 'C + S',
+                         Treatment == 'Cleared + Scraped + Burned' ~ 'C + S + B',
+                         Treatment == 'Reference' ~ 'Reference')) %>%
+  mutate(TRT = fct_relevel(TRT, "Control", "C", "C + B",
+                           "C + S", "C + S + B"))
 
-# bar graph with mean + SE bars 
-figDATA2 <- summarySE(figDATA, measurevar="Sum", groupvars=c("Group","Site_Condition","Depth")) 
+Na_Summary <- Na_Summary %>%
+  mutate(Letters = c("a","ab","abc","a","ab","bc", "bcd","bcd","abcd","cde","bcd","bcde","defg", "bcd",
+                     "cdef", "bc", "bcd", "bc", "efg", "efg", "efg", "ef", "def", "def", "g", 
+                     "fg", "efg", "f", "def", "f", "bcdefg", "bcde", "bcdefg", "bcde", "bcdef", "bcde"))
 
-figDATA2 <- figDATA2 %>%
-  dplyr::mutate(Depth = case_when(Depth == '1' ~ '1-Surface',
-                                  Depth == '2' ~ '2-Mineral Soil')) %>%
-  dplyr::mutate(Letters = c("a","b","b","b","a","b","b","b","b","b","a","b"))
-
-ggplot(figDATA2, aes(x=Depth, y=Sum, group=Site_Condition)) +
-  geom_col(aes(fill=Site_Condition),position = "dodge") + 
-  geom_errorbar(aes(ymin=Sum-se, ymax=Sum+se), width=.3, position=position_dodge(0.9)) +
-  geom_text(aes(y=Sum+se+3, label=Letters), position=position_dodge(0.9)) +
-  scale_fill_manual(values=c('lightblue2','grey44')) +
-  xlab("Sample Depth") +
-  ylab("Mean Seedling Emergence") +
+ggplot(Na_Summary, aes(x=TRT, y=Na, group=Time)) +
+  geom_col(aes(fill=Time),position = "dodge") + 
+  geom_errorbar(aes(ymin=Na-se, ymax=Na+se), width=.3, position=position_dodge(0.9)) +
+  geom_text(aes(y=Na+se+2, label=Letters), position=position_dodge(0.9)) +
+  scale_fill_manual(values=c("lightcyan",'lightblue3','lightcyan4')) +
+  xlab("Restoration Treatment") +
+  ylab("Na (units)") +
   theme_bw() +
   theme(panel.border = element_rect(color="black", fill=NA, size=1), 
         panel.grid.major = element_blank(),
@@ -523,11 +532,8 @@ ggplot(figDATA2, aes(x=Depth, y=Sum, group=Site_Condition)) +
         axis.title.y = element_text(size = 16, vjust = +3),
         legend.title=element_text(size=12), 
         legend.text=element_text(size=12)) +
-  facet_wrap(~factor(Group, c("Woody", "Forb", "Graminoid"))) +
+  facet_wrap(~factor(Position, c("Upper", "Bottom"))) +
   theme(strip.text = element_text(size=12))
-
-
-
 
 
 ########################### Position x Year  ####################################
@@ -571,5 +577,24 @@ TK_Pos_Year_Summary <- summarySE(TKData, measurevar="Total_K", groupvars=c("Posi
                           Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
   mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
                             "2-Years Post Treatment (2024)"))
+
+########################### Treatment X Position ####################################
+############## Bulk Density # Total_K Only ##########################################
+############## Table for this rather than figure ####################################
+
+TKData <- SoilsData %>%
+  drop_na(Total_K) %>%
+  mutate(Treatment = fct_relevel(Treatment, "Control", "Cleared", "Cleared + Burned",
+                                 "Cleared + Scraped", "Cleared + Scraped + Burned"))
+
+
+TK_Trt_Pos_Summary <- summarySE(TKData, measurevar="Total_K", groupvars=c("Treatment", "Position")) 
+
+
+
+
+
+
+
 
 

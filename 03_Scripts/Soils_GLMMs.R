@@ -697,10 +697,11 @@ Anova(NaMod2, type="III")
 
 # 3-way interaction effect between Treatment , Position , and Year 
 
-# Pairwise Treatment 
-PairsNaMod <- emmeans(NaMod2, ~Treatment | Position | Year, type='response') 
+# Pairwise Treatment * Year | Position 
+PairsNaMod <- emmeans(NaMod2, ~Treatment * Year | Position, type='response') 
 pairs(PairsNaMod)
 CI_Letters_Na <- cld(PairsNaMod, Letters=letters, sort=TRUE, decreasing=TRUE)
+# 
 
 ############################### OM #####################################
 
