@@ -236,12 +236,12 @@ TN_Summary <- summarySE(TNData, measurevar="Total_N", groupvars=c("Treatment", "
   mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
                             "2-Years Post Treatment (2024)"))
 
-TN <- ggplot(TN_Summary, aes(x=Time, y=Total_N, group = Treatment, color=Treatment))+ 
-    geom_errorbar(aes(ymin=Total_N-se, ymax=Total_N+se), width=.2, 
+TN <- ggplot(TN_Summary, aes(x=Time, y=Total_N*10, group = Treatment, color=Treatment))+ 
+    geom_errorbar(aes(ymin=Total_N*10-se*10, ymax=Total_N*10+se*10), width=.2, 
                   position=position_dodge(0.0)) +
     geom_line(linewidth=1) + 
     geom_point(aes(shape=Treatment), size=4)+
-    labs(x="Time", y = "Total N (units)")+
+    labs(x="Time", y = "Total N (g/kg)")+
     theme_classic() + 
     scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
     scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
@@ -275,7 +275,7 @@ TP <- ggplot(TP_Summary, aes(x=Time, y=Total_P, group = Treatment, color=Treatme
                 position=position_dodge(0.0)) +
   geom_line(linewidth=1) + 
   geom_point(aes(shape=Treatment), size=4)+
-  labs(x="Time", y = "Total P (units)")+
+  labs(x="Time", y = "Total P (mg/kg)")+
   theme_classic() + 
   scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
   scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
@@ -309,7 +309,7 @@ TK <- ggplot(TK_Summary, aes(x=Time, y=Total_K, group = Treatment, color=Treatme
                 position=position_dodge(0.0)) +
   geom_line(linewidth=1) + 
   geom_point(aes(shape=Treatment), size=4)+
-  labs(x="Time", y = "Total K (units)")+
+  labs(x="Time", y = "Total K (mg/kg)")+
   theme_classic() + 
   scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
   scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
@@ -342,7 +342,7 @@ Cl <- ggplot(Cl_Summary, aes(x=Time, y=Cl, group = Treatment, color=Treatment))+
                 position=position_dodge(0.0)) +
   geom_line(linewidth=1) + 
   geom_point(aes(shape=Treatment), size=4)+
-  labs(x="Time", y = "Cl (units)")+
+  labs(x="Time", y = "Cl (mg/kg)")+
   theme_classic() + 
   scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
   scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
@@ -377,7 +377,7 @@ BD <- ggplot(BD_Summary, aes(x=Time, y=BulkDensity, group = Treatment, color=Tre
                 position=position_dodge(0.0)) +
   geom_line(linewidth=1) + 
   geom_point(aes(shape=Treatment), size=4)+
-  labs(x="Time", y = "Bulk Density (units)")+
+  labs(x="Time", y = "Bulk Density (g/cm3)")+
   theme_classic() + 
   scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
   scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
@@ -475,7 +475,7 @@ ggplot(Fe_Summary, aes(x=TRT, y=Fe, group=Time)) +
   geom_text(aes(y=Fe+se+6, label=Letters), position=position_dodge(0.9)) +
   scale_fill_manual(values=c("lightcyan",'lightblue3','lightcyan4')) +
   xlab("Restoration Treatment") +
-  ylab("Fe (units)") +
+  ylab("Fe (mg/kg)") +
   theme_bw() +
   theme(panel.border = element_rect(color="black", fill=NA, size=1), 
         panel.grid.major = element_blank(),
@@ -520,7 +520,7 @@ ggplot(Na_Summary, aes(x=TRT, y=Na, group=Time)) +
   geom_text(aes(y=Na+se+2, label=Letters), position=position_dodge(0.9)) +
   scale_fill_manual(values=c("lightcyan",'lightblue3','lightcyan4')) +
   xlab("Restoration Treatment") +
-  ylab("Na (units)") +
+  ylab("Na (mg/kg)") +
   theme_bw() +
   theme(panel.border = element_rect(color="black", fill=NA, size=1), 
         panel.grid.major = element_blank(),
@@ -591,7 +591,13 @@ TKData <- SoilsData %>%
 TK_Trt_Pos_Summary <- summarySE(TKData, measurevar="Total_K", groupvars=c("Treatment", "Position")) 
 
 
+BDData <- SoilsData %>%
+  drop_na(BulkDensity) %>%
+  mutate(Treatment = fct_relevel(Treatment, "Control", "Cleared", "Cleared + Burned",
+                                 "Cleared + Scraped", "Cleared + Scraped + Burned"))
 
+
+BD_Trt_Pos_Summary <- summarySE(BDData, measurevar="BulkDensity", groupvars=c("Treatment", "Position")) 
 
 
 

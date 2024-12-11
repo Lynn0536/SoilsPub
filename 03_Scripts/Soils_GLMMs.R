@@ -270,6 +270,10 @@ PairsKMod_2 <- emmeans(KMod2, ~Position*Year, type='response')
 pairs(PairsKMod_2)
 CI_Letters_TK_2 <- cld(PairsKMod_2, Letters=letters, sort=TRUE, decreasing=TRUE)
 
+# Pairwise Treatment X Position 
+PairsKMod_3 <- emmeans(KMod2, ~Treatment*Position, type='response') 
+pairs(PairsKMod_3)
+CI_Letters_TK_3 <- cld(PairsKMod_3, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 ############################### Cl #####################################
 
@@ -349,7 +353,7 @@ plot(fitted(BDMod3), residuals(BDMod3))
 Anova(BDMod3, type="III")
 
 # Pairwise Treatment x Position
-PairsBDMod <- emmeans(BDMod3, ~Treatment|Position, type='response') 
+PairsBDMod <- emmeans(BDMod3, ~Treatment*Position, type='response') 
 pairs(PairsBDMod)
 CI_Letters_BD <- cld(PairsBDMod, Letters=letters, sort=TRUE, decreasing=TRUE)
 
