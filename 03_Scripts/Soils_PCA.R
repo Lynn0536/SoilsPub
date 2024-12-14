@@ -29,14 +29,24 @@ library(PCAtest)
 
 ################ Call in Clean Data ################## 
 
-SoilsData <- read_csv("02_CleanData/EPA_Soil_CLEAN.csv") 
+RawData <- read_csv("02_CleanData/EPA_Soil_CLEAN.csv") 
 
-summary(SoilsData)   
+SoilsData <- RawData %>%
+  filter(Treatment != "Scraped") %>%
+  filter(Treatment != "Burned") %>%
+  filter(Treatment != "Scraped + Burned") %>%
+  dplyr:: select(c(UniqueID, Site, Treatment, Position, Year, Total_N, Total_P, 
+                   Total_K, Cl, BulkDensity, Mg, Ca, pHw, CEC, S, Fe, Na, OM)) %>%
+  mutate(ID = rownames(.)) 
+
+SoilsData$ID <- as.numeric(SoilsData$ID)
+
+summary(SoilsData$ID)   
 str(SoilsData)
 
 ########### Step 1: Normalize Data: Normalizing the data : ) ###############
 
-Soil_Norm <- scale(SoilsData[,9:23])
+Soil_Norm <- scale(SoilsData[,6:18])
 head(Soil_Norm)
 
 ######### Step 2: Compute the Correlation Matrix ###########################
@@ -96,14 +106,14 @@ summary(PCA_Test)
 # Convert Zscores to a dataframe THEN add a column called 'UniqueID' made up of consecutive 
 # numbers that will equal the number of rows. This will create a column the datasets can be joined by!
 Scores <- as.data.frame(Zscores[, 1:2])
-Scores$UniqueID <- 1:nrow(Scores) 
+Scores$ID <- 1:nrow(Scores) 
 
-JoinedData <- left_join(SoilsData, Scores, by = "UniqueID")
+JoinedData <- left_join(SoilsData, Scores, by = "ID")
 
 ## 10.2 - Now remove unneeded columns 
 
 JoinedData <- JoinedData %>%
-  select(UniqueID, Site, Treatment, Position, Year, Comp.1, Comp.2)
+  dplyr::select(ID, Site, Treatment, Position, Year, Comp.1, Comp.2)
 
 JoinedData <- JoinedData %>%
   mutate(Year = as_factor(Year)) 
@@ -114,7 +124,7 @@ Loadings <- setNames(cbind(rownames(Loadings), Loadings, row.names = NULL),
          c("VAR", "PC1", "PC2"))
 
 Loadings <- Loadings %>%
-  select(VAR, PC1, PC2)
+  dplyr::select(VAR, PC1, PC2)
 
 ## 1.3 Graph 
 
@@ -129,8 +139,8 @@ POSITION <- ggplot(data=JoinedData) +
                aes(x = 0, xend = PC1*15, y = 0, yend = PC2*15),
                arrow = arrow(length = unit(0.2, "cm")),
                colour = "grey40", inherit.aes = FALSE) +
-  xlab("PC1 (54.5% of the variation explained)") +
-  ylab("PC2 (12.2% of the variation explained)") +
+  xlab("PC1 (54.8% of the variation explained)") +
+  ylab("PC2 (14.8% of the variation explained)") +
   theme_classic() +
   scale_y_continuous(limits=c(-5,10), breaks = seq(-5,10, by = 1.0)) +
   scale_x_continuous(limits=c(-5,11), breaks = seq(-5,11, by = 1.0)) +  
@@ -159,8 +169,8 @@ YEAR <- ggplot(data=JoinedData) +
                aes(x = 0, xend = PC1*15, y = 0, yend = PC2*15),
                arrow = arrow(length = unit(0.2, "cm")),
                colour = "grey40", inherit.aes = FALSE) +
-  xlab("PC1 (54.5% of the variation explained)") +
-  ylab("PC2 (12.2% of the variation explained)") +
+  xlab("PC1 (54.8% of the variation explained)") +
+  ylab("PC2 (14.8% of the variation explained)") +
   theme_classic() +
   scale_y_continuous(limits=c(-5,10), breaks = seq(-5,10, by = 1.0)) +
   scale_x_continuous(limits=c(-5,11), breaks = seq(-5,11, by = 1.0)) +  
@@ -189,8 +199,8 @@ TREATMENT <- ggplot(data=JoinedData) +
                aes(x = 0, xend = PC1*15, y = 0, yend = PC2*15),
                arrow = arrow(length = unit(0.2, "cm")),
                colour = "grey40", inherit.aes = FALSE) +
-  xlab("PC1 (54.5% of the variation explained)") +
-  ylab("PC2 (12.2% of the variation explained)") +
+  xlab("PC1 (54.8% of the variation explained)") +
+  ylab("PC2 (14.8% of the variation explained)") +
   theme_classic() +
   scale_y_continuous(limits=c(-5,10), breaks = seq(-5,10, by = 1.0)) +
   scale_x_continuous(limits=c(-5,11), breaks = seq(-5,11, by = 1.0)) +  
