@@ -189,7 +189,7 @@ YEAR <- ggplot(data=JoinedData) +
   geom_hline(yintercept = 0)
 
 TREATMENT <- ggplot(data=JoinedData) +
-  geom_point(mapping=aes(x=Comp.1, y=Comp.2, color = Treatment), size=3) +
+  geom_point(mapping=aes(x=Comp.1, y=Comp.2, shape = Treatment), size=3) +
   #scale_shape_manual(values=shapes) +
   ggrepel::geom_text_repel(data=Loadings, aes(x = PC1*15, y = PC2*15, label = VAR), 
                            size=4) +

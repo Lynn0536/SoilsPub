@@ -146,14 +146,16 @@ plot(fitted(NMod2), residuals(NMod2))
 
 Anova(NMod2, type="III")
 
-# Pairwise Treatment x Year 
+# Pairwise Treatment  
 PairsNMod <- emmeans(NMod2, ~Treatment, type='response') 
-pairs(PairsNMod)
-CI_Letters_Rich <- cld(PairsNMod, Letters=letters, sort=TRUE, decreasing=TRUE)
+TRT_Pairs_N <- pairs(PairsNMod)
+TN_Tibble <- as_tibble(summary(TRT_Pairs_N))
+CI_Letters_TN <- cld(PairsNMod, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 # Pairwise Position X Year 
 PairsNMod_2 <- emmeans(NMod2, ~Position*Year, type='response') 
-pairs(PairsNMod_2)
+PosYr_Pairs_N <- pairs(PairsNMod_2)
+TN_Tibble2 <- as_tibble(summary(PosYr_Pairs_N))
 CI_Letters_2 <- cld(PairsNMod_2, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 
@@ -213,12 +215,14 @@ Anova(PMod2, type="III")
 
 # Pairwise Treatment x Year 
 PairsPMod <- emmeans(PMod2, ~Treatment|Year, type='response') 
-pairs(PairsPMod)
+TrtYr_Pairs_P <- pairs(PairsPMod)
+TP_Tibble <- as_tibble(summary(TrtYr_Pairs_P))
 CI_Letters <- cld(PairsPMod, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 # Pairwise Position x Year 
 PairsPMod_2 <- emmeans(PMod2, ~Position*Year, type='response') 
-pairs(PairsPMod_2)
+PosYr_Pairs_P <- pairs(PairsPMod_2)
+TP_Tibble2 <- as_tibble(summary(PosYr_Pairs_P))
 CI_Letters_3 <- cld(PairsPMod_2, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 ############################### TOTAL K #####################################
@@ -261,18 +265,21 @@ plot(fitted(KMod2), residuals(KMod2))
 Anova(KMod2, type="III")
 
 # Pairwise Treatment x Year 
-PairsKMod <- emmeans(KMod2, ~Treatment|Position, type='response') 
-pairs(PairsKMod)
-CI_Letters_Rich <- cld(PairsKMod, Letters=letters, sort=TRUE, decreasing=TRUE)
+PairsKMod <- emmeans(KMod2, ~Treatment|Year, type='response') 
+TrtYr_Pairs_K <- pairs(PairsKMod)
+TK_Tibble <- as_tibble(summary(TrtYr_Pairs_K))
+CI_Letters_TK <- cld(PairsKMod, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 # Pairwise Position X Year 
 PairsKMod_2 <- emmeans(KMod2, ~Position*Year, type='response') 
-pairs(PairsKMod_2)
+PosYr_Pairs_K <- pairs(PairsKMod_2)
+TK_Tibble2 <- as_tibble(summary(PosYr_Pairs_K))
 CI_Letters_TK_2 <- cld(PairsKMod_2, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 # Pairwise Treatment X Position 
 PairsKMod_3 <- emmeans(KMod2, ~Treatment*Position, type='response') 
-pairs(PairsKMod_3)
+TRTPos_Pairs_K <- pairs(PairsKMod_3)
+TK_Tibble3 <- as_tibble(summary(TRTPos_Pairs_K))
 CI_Letters_TK_3 <- cld(PairsKMod_3, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 ############################### Cl #####################################
@@ -302,14 +309,20 @@ ClMod2 <- glmmTMB(log(Cl) ~ Treatment * Position * Year + (1|Site) +
 # Now look at the residuals 
 plot(simulateResiduals(ClMod2))
 hist(simulateResiduals(KMod2)) ## histogram should be flat
-qqPlot(resid(KMod2))  ## residuals should line up pretty closely to the blue line
-hist(residuals(KMod2))
-plot(fitted(KMod2), residuals(KMod2))
+qqPlot(resid(ClMod2))  ## residuals should line up pretty closely to the blue line
+hist(residuals(ClMod2))
+plot(fitted(ClMod2), residuals(ClMod2))
+
+##################### Cl Model Results  ##########################################
+## May need to round values and use a poisson distribution #######################
 
 Anova(ClMod2, type="III")
 
-##################### SKIP Cl for NOW ##########################################
-## May need to round values and use a poisson distribution #####################
+# Pairwise Treatment x Year 
+PairsClMod <- emmeans(ClMod2, ~Treatment|Year, type='response') 
+TrtYr_Pairs_Cl <- pairs(PairsClMod)
+Cl_Tibble <- as_tibble(summary(TrtYr_Pairs_Cl))
+CI_Letters_Cl <- cld(PairsClMod, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 ############################### Bulk Density ###################################
 
@@ -338,7 +351,6 @@ BDMod3 <- glmmTMB(BulkDensity ~ Treatment * Position * Year + (1|Site) +
                    (1|Site:Treatment) + (1|Site:Treatment:Position), 
                  data=SoilsData, family=gaussian()) 
 
-
 # Now look at the residuals 
 plot(simulateResiduals(BDMod3))
 hist(simulateResiduals(BDMod3)) ## histogram should be flat
@@ -354,12 +366,14 @@ Anova(BDMod3, type="III")
 
 # Pairwise Treatment x Position
 PairsBDMod <- emmeans(BDMod3, ~Treatment*Position, type='response') 
-pairs(PairsBDMod)
+TrtPos_Pairs_BD <- pairs(PairsBDMod)
+BD_Tibble <- as_tibble(summary(TrtPos_Pairs_BD))
 CI_Letters_BD <- cld(PairsBDMod, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 # Pairwise Treatment x Year
 PairsBDMod2 <- emmeans(BDMod3, ~Treatment|Year, type='response') 
-pairs(PairsBDMod2)
+TrtYr_Pairs_BD <- pairs(PairsBDMod2)
+BD_Tibble2 <- as_tibble(summary(TrtYr_Pairs_BD))
 CI_Letters_BD2 <- cld(PairsBDMod2, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 ################################# Mg ###########################################
@@ -401,7 +415,8 @@ Anova(MgMod2, type="III")
 
 # Pairwise Treatment 
 PairsMgMod <- emmeans(MgMod2, ~Treatment, type='response') 
-pairs(PairsMgMod)
+TRT_Pairs_Mg <- pairs(PairsMgMod)
+Mg_Tibble <- as_tibble(summary(TRT_Pairs_Mg))
 CI_Letters_Mg <- cld(PairsMgMod, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 ################################# Ca ###########################################
@@ -443,7 +458,8 @@ Anova(CaMod2, type="III")
 
 # Pairwise Treatment 
 PairsCaMod <- emmeans(CaMod2, ~Treatment, type='response') 
-pairs(PairsCaMod)
+TRT_Pairs_Ca <- pairs(PairsCaMod)
+Ca_Tibble <- as_tibble(summary(TRT_Pairs_Ca))
 CI_Letters_Ca <- cld(PairsCaMod, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 ################################# pH ###########################################
@@ -485,8 +501,9 @@ plot(fitted(pHMod3), residuals(pHMod3))
 Anova(pHMod3, type="III")
 
 # Pairwise Treatment 
-PairspHMod <- emmeans(pHMod3, ~Treatment | Year, type='response') 
-pairs(PairspHMod)
+PairspHMod <- emmeans(pHMod3, ~Treatment|Year, type='response') 
+TrtYr_Pairs_pH <- pairs(PairspHMod)
+pH_Tibble <- as_tibble(summary(TrtYr_Pairs_pH))
 CI_Letters_pH <- cld(PairspHMod, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 ################################# CEC ###########################################
@@ -532,7 +549,8 @@ Anova(CECMod3, type="III")
 
 # Pairwise Treatment 
 PairsCECMod <- emmeans(CECMod3, ~Treatment, type='response') 
-pairs(PairsCECMod)
+TRT_Pairs_CEC <- pairs(PairsCECMod)
+CEC_Tibble <- as_tibble(summary(TRT_Pairs_CEC))
 CI_Letters_CEC <- cld(PairsCECMod, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 ################################# S ###########################################
@@ -586,15 +604,16 @@ Anova(SMod2, type="III")
 
 # Pairwise Treatment 
 PairsSMod <- emmeans(SMod2, ~Treatment, type='response') 
-pairs(PairsSMod)
+TRT_Pairs_S <- pairs(PairsSMod)
+S_Tibble <- as_tibble(summary(TRT_Pairs_S))
 CI_Letters_S <- cld(PairsSMod, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 
 # Pairwise Year 
-PairSMod2 <- emmeans(SMod2, ~Year, type='response') 
-pairs(PairSMod2)
+PairsSMod2 <- emmeans(SMod2, ~Year, type='response') 
+Yr_Pairs_S <- pairs(PairsSMod2)
+S_Tibble2 <- as_tibble(summary(Yr_Pairs_S))
 CI_Letters_S2 <- cld(PairSMod2, Letters=letters, sort=TRUE, decreasing=TRUE)
-
 
 ############################### Fe #####################################
 
@@ -639,9 +658,9 @@ Anova(FeMod2, type="III")
 
 # 3-way interaction effect between Treatment , Position , and Year 
 
-# Pairwise Treatment 
+# Pairwise Treatment x Year | Position
 PairsFeMod <- emmeans(FeMod2, ~Treatment * Year | Position, type='response') 
-pairs(PairsFeMod)
+
 CI_Letters_Fe <- cld(PairsFeMod, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 ############################### Na #####################################
@@ -703,9 +722,9 @@ Anova(NaMod2, type="III")
 
 # Pairwise Treatment * Year | Position 
 PairsNaMod <- emmeans(NaMod2, ~Treatment * Year | Position, type='response') 
-pairs(PairsNaMod)
+TRTPosYr_Pairs_Na <- pairs(PairsNaMod)
+Na_Tibble <- as_tibble(summary(TRTPosYr_Pairs_Na))
 CI_Letters_Na <- cld(PairsNaMod, Letters=letters, sort=TRUE, decreasing=TRUE)
-# 
 
 ############################### OM #####################################
 
@@ -766,12 +785,14 @@ Anova(OMMod2, type="III")
 
 # Pairwise Treatment 
 PairsOMMod_TRT <- emmeans(OMMod2, ~Treatment, type='response') 
-pairs(PairsOMMod_TRT)
+TRT_Pairs_OM <- pairs(PairsOMMod_TRT)
+OM_Tibble <- as_tibble(summary(TRT_Pairs_OM))
 CI_Letters_OM_TRT <- cld(PairsOMMod_TRT, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 # Pairwise Position
 PairsOMMod_POS <- emmeans(OMMod2, ~Position, type='response') 
-pairs(PairsOMMod_POS)
+POS_Pairs_OM <- pairs(PairsOMMod_POS)
+OM_Tibble2 <- as_tibble(summary(POS_Pairs_OM))
 CI_Letters_OM_POS <- cld(PairsOMMod_POS, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 
