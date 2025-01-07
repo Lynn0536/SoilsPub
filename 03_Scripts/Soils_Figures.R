@@ -84,8 +84,8 @@ CaTEXTData <- CaData %>%
 
 Box_Ca <- ggplot(CaData, aes(TRT, Ca, fill=TRT)) +
   geom_boxplot(outlier.size=0.5, width=0.3) +
-  stat_summary(fun.Ca = "mean", geom="point", color="black", shape=17, size=3,
-               position= position_dodge2(width=0.75, preserve ="single")) +
+  geom_point(data=Ca_Summary, mapping=aes(x=TRT, y=Ca, fill="black"), shape=17, size=3,
+             position= position_dodge2(width=0.75, preserve ="single")) +
   scale_fill_brewer(palette="Pastel2") +
   #scale_fill_manual(values=c("#666666", "#336666", "#006699", "#339999", "#33CCCC", "#33FFFF")) +
   xlab("Treatment") +
@@ -117,7 +117,7 @@ CEC_Summary <- summarySE(CECData, measurevar="CEC", groupvars=c("TRT"))
 CECTEXTData <- CECData %>%
   dplyr::group_by(TRT) %>%
   dplyr::summarise(MaxCEC = max(CEC)) %>%
-  mutate(Letters = c("a","b","b","b","c","c"))
+  mutate(Letters = c("a","b","b","c","c","b"))
 
 
 Box_CEC <- ggplot(CECData, aes(TRT, CEC, fill=TRT)) +
@@ -151,6 +151,8 @@ SData <- SoilsData %>%
                            "C + S", "C + S + B", 'Reference'))
 
 S_Summary <- summarySE(SData, measurevar="S", groupvars=c("TRT"))
+
+S_Summary_Yr <- summarySE(SData, measurevar="S", groupvars=c("Year"))
 
 STEXTData <- SData %>%
   dplyr::group_by(TRT) %>%
