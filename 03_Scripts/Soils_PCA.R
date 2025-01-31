@@ -36,7 +36,7 @@ SoilsData <- RawData %>%
   filter(Treatment != "Burned") %>%
   filter(Treatment != "Scraped + Burned") %>%
   dplyr:: select(c(UniqueID, Site, Treatment, Position, Year, Total_N, Total_P, 
-                   Total_K, Cl, BulkDensity, Mg, Ca, pHw, CEC, S, Fe, Na, OM)) %>%
+                   Total_K, BulkDensity, Mg, Ca, pH, S, Fe, Na, SOM)) %>%
   mutate(ID = rownames(.)) 
 
 SoilsData$ID <- as.numeric(SoilsData$ID)
@@ -46,7 +46,7 @@ str(SoilsData)
 
 ########### Step 1: Normalize Data: Normalizing the data : ) ###############
 
-Soil_Norm <- scale(SoilsData[,6:18])
+Soil_Norm <- scale(SoilsData[,6:16])
 head(Soil_Norm)
 
 ######### Step 2: Compute the Correlation Matrix ###########################
@@ -116,7 +116,10 @@ JoinedData <- JoinedData %>%
   dplyr::select(ID, Site, Treatment, Position, Year, Comp.1, Comp.2)
 
 JoinedData <- JoinedData %>%
-  mutate(Year = as_factor(Year)) 
+  mutate(Year = as_factor(Year)) %>%
+  mutate(Treatment = fct_relevel(Treatment, "Control", "Cleared",
+                                 "Cleared + Burned", "Cleared + Scraped", "Cleared + Scraped + Burned",
+                                 "Reference"))
 
 ## 10.3 - Create column called VAR in the Loadings data frame 
 
@@ -199,8 +202,8 @@ TREATMENT <- ggplot(data=JoinedData) +
                aes(x = 0, xend = PC1*15, y = 0, yend = PC2*15),
                arrow = arrow(length = unit(0.2, "cm")),
                colour = "grey40", inherit.aes = FALSE) +
-  xlab("PC1 (54.8% of the variation explained)") +
-  ylab("PC2 (14.8% of the variation explained)") +
+  xlab("PC1 (57.7% of the variation explained)") +
+  ylab("PC2 (17.4% of the variation explained)") +
   theme_classic() +
   scale_y_continuous(limits=c(-5,10), breaks = seq(-5,10, by = 1.0)) +
   scale_x_continuous(limits=c(-5,11), breaks = seq(-5,11, by = 1.0)) +  

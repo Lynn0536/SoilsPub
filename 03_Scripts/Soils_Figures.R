@@ -279,10 +279,10 @@ TNData <- SoilsData %>%
                                  "Cleared + Scraped", "Cleared + Scraped + Burned"))
 
 TN_Summary <- summarySE(TNData, measurevar="Total_N", groupvars=c("Treatment", "Year")) %>%
-  mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
+  mutate(Time = case_when(Year == '2022' ~ '2-Weeks Post Treatment (2022)',
                        Year == '2023' ~ '1-Year Post Treatment (2023)',
                        Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
-  mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
+  mutate(Time = fct_relevel(Time, "2-Weeks Post Treatment (2022)", "1-Year Post Treatment (2023)",
                             "2-Years Post Treatment (2024)"))
 
 TN <- ggplot(TN_Summary, aes(x=Time, y=Total_N*10, group = Treatment, color=Treatment))+ 
@@ -313,10 +313,10 @@ TPData <- SoilsData %>%
                                  "Cleared + Scraped", "Cleared + Scraped + Burned"))
 
 TP_Summary <- summarySE(TPData, measurevar="Total_P", groupvars=c("Treatment", "Year")) %>%
-  mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
+  mutate(Time = case_when(Year == '2022' ~ '2-Weeks Post Treatment (2022)',
                           Year == '2023' ~ '1-Year Post Treatment (2023)',
                           Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
-  mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
+  mutate(Time = fct_relevel(Time, "2-Weeks Post Treatment (2022)", "1-Year Post Treatment (2023)",
                             "2-Years Post Treatment (2024)"))
 
 TP <- ggplot(TP_Summary, aes(x=Time, y=Total_P, group = Treatment, color=Treatment))+ 
@@ -347,10 +347,10 @@ TKData <- SoilsData %>%
                                  "Cleared + Scraped", "Cleared + Scraped + Burned"))
 
 TK_Summary <- summarySE(TPData, measurevar="Total_K", groupvars=c("Treatment", "Year")) %>%
-  mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
+  mutate(Time = case_when(Year == '2022' ~ '2-Weeks Post Treatment (2022)',
                           Year == '2023' ~ '1-Year Post Treatment (2023)',
                           Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
-  mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
+  mutate(Time = fct_relevel(Time, "2-Weeks Post Treatment (2022)", "1-Year Post Treatment (2023)",
                             "2-Years Post Treatment (2024)"))
 
 TK <- ggplot(TK_Summary, aes(x=Time, y=Total_K, group = Treatment, color=Treatment))+ 
@@ -380,10 +380,10 @@ ClData <- SoilsData %>%
                                  "Cleared + Scraped", "Cleared + Scraped + Burned"))
 
 Cl_Summary <- summarySE(ClData, measurevar="Cl", groupvars=c("Treatment", "Year")) %>%
-  mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
+  mutate(Time = case_when(Year == '2022' ~ '2-Weeks Post Treatment (2022)',
                           Year == '2023' ~ '1-Year Post Treatment (2023)',
                           Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
-  mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
+  mutate(Time = fct_relevel(Time, "2-Weeks Post Treatment (2022)", "1-Year Post Treatment (2023)",
                             "2-Years Post Treatment (2024)"))
 
 Cl <- ggplot(Cl_Summary, aes(x=Time, y=Cl, group = Treatment, color=Treatment))+ 
@@ -417,10 +417,10 @@ max(BDData$BulkDensity)
 min(BDData$BulkDensity)
 
 BD_Summary <- summarySE(BDData, measurevar="BulkDensity", groupvars=c("Treatment", "Year")) %>%
-  mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
+  mutate(Time = case_when(Year == '2022' ~ '2-Weeks Post Treatment (2022)',
                           Year == '2023' ~ '1-Year Post Treatment (2023)',
                           Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
-  mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
+  mutate(Time = fct_relevel(Time, "2-Weeks Post Treatment (2022)", "1-Year Post Treatment (2023)",
                             "2-Years Post Treatment (2024)"))
 
 BD <- ggplot(BD_Summary, aes(x=Time, y=BulkDensity, group = Treatment, color=Treatment))+ 
@@ -452,10 +452,10 @@ pHData <- SoilsData %>%
                                  "Cleared + Scraped", "Cleared + Scraped + Burned"))
 
 pH_Summary <- summarySE(pHData, measurevar="pHw", groupvars=c("Treatment", "Year")) %>%
-  mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
+  mutate(Time = case_when(Year == '2022' ~ '2-Weeks Post Treatment (2022)',
                           Year == '2023' ~ '1-Year Post Treatment (2023)',
                           Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
-  mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
+  mutate(Time = fct_relevel(Time, "2-Weeks Post Treatment (2022)", "1-Year Post Treatment (2023)",
                             "2-Years Post Treatment (2024)"))
 
 pH <- ggplot(pH_Summary, aes(x=Time, y=pHw, group = Treatment, colour=Treatment))+ 
@@ -484,11 +484,10 @@ pH <- ggplot(pH_Summary, aes(x=Time, y=pHw, group = Treatment, colour=Treatment)
 prow <- plot_grid(
   TP + theme(legend.position=c(0.7,0.8)),
   TK + theme(legend.position="none"),
-  Cl + theme(legend.position="none"),
   BD + theme(legend.position="none"),
   pH + theme(legend.position="none"),
     align = 'vh',
-  labels = c("A", "B", "C","D","E"),
+  labels = c("A", "B", "C","D"),
   hjust = -1,
   nrow = 2
 )
@@ -597,10 +596,6 @@ prow2 <- plot_grid(
 prow2
 
 
-
-
-
-
 ########################### Position x Year  ####################################
 ##### Total_N # Total_P # Total_K Only ##########################################
 ########## Table for this rather than figure ####################################
@@ -673,5 +668,118 @@ OMData <- SoilsData %>%
 
 OM_Summary2 <- summarySE(OMData, measurevar="OM", groupvars=c("Position"))
 
+################ Conversion of Fig 3 to Table ##################################
+################ Significant Treatment Effect ONLY #############################
 
+## Mg 
+
+## Remove row if there is an NA Value in the "Mg" column 
+MgData <- SoilsData %>%
+  drop_na(Mg) %>%
+  mutate(TRT = fct_relevel(TRT, "Control", "C", "C + B",
+                           "C + S", "C + S + B", 'Reference'))
+
+Mg_Summary <- summarySE(MgData, measurevar="Mg", groupvars=c("TRT"))
+
+MgMax <- MgData %>%
+  dplyr::group_by(TRT) %>%
+  dplyr::summarise(MaxMg = max(Mg)) 
+
+MgMin <- MgData %>%
+  dplyr::group_by(TRT) %>%
+  dplyr::summarise(MinMg = min(Mg)) 
+
+MedianMg <- MgData %>%
+  dplyr::group_by(TRT) %>%
+  dplyr::summarise(MedianMg = median(Mg)) 
+
+
+## Ca
+
+## Remove row if there is an NA Value in the "Ca" column 
+CaData <- SoilsData %>%
+  drop_na(Ca) %>%
+  mutate(TRT = fct_relevel(TRT, "Control", "C", "C + B",
+                           "C + S", "C + S + B", 'Reference'))
+
+Ca_Summary <- summarySE(CaData, measurevar="Ca", groupvars=c("TRT"))
+
+CaMax <- CaData %>%
+  dplyr::group_by(TRT) %>%
+  dplyr::summarise(MaxCa = max(Ca)) 
+
+CaMin <- CaData %>%
+  dplyr::group_by(TRT) %>%
+  dplyr::summarise(MinCa = min(Ca)) 
+
+MedianCa <- CaData %>%
+  dplyr::group_by(TRT) %>%
+  dplyr::summarise(MedianCa = median(Ca)) 
+
+## S
+
+## Remove row if there is an NA Value in the "S" column 
+SData <- SoilsData %>%
+  drop_na(S) %>%
+  mutate(TRT = fct_relevel(TRT, "Control", "C", "C + B",
+                           "C + S", "C + S + B", 'Reference'))
+
+S_Summary <- summarySE(CaData, measurevar="S", groupvars=c("TRT"))
+
+SMax <- SData %>%
+  dplyr::group_by(TRT) %>%
+  dplyr::summarise(MaxS = max(S)) 
+
+SMin <- SData %>%
+  dplyr::group_by(TRT) %>%
+  dplyr::summarise(MinS = min(S)) 
+
+MedianS <- SData %>%
+  dplyr::group_by(TRT) %>%
+  dplyr::summarise(MedianS = median(S)) 
+
+## OM
+
+## Remove row if there is an NA Value in the "OM" column 
+OMData <- SoilsData %>%
+  drop_na(OM) %>%
+  mutate(TRT = fct_relevel(TRT, "Control", "C", "C + B",
+                           "C + S", "C + S + B", 'Reference'))
+
+OM_Summary <- summarySE(CaData, measurevar="OM", groupvars=c("TRT"))
+
+OMMax <- OMData %>%
+  dplyr::group_by(TRT) %>%
+  dplyr::summarise(MaxOM = max(OM)) 
+
+OMMin <- OMData %>%
+  dplyr::group_by(TRT) %>%
+  dplyr::summarise(MinOM = min(OM)) 
+
+MedianOM <- OMData %>%
+  dplyr::group_by(TRT) %>%
+  dplyr::summarise(MedianOM = median(OM)) 
+
+## Total N 
+
+## Remove row if there is an NA Value in the "Total_N" column 
+TNData <- SoilsData %>%
+  drop_na(Total_N) %>%
+  mutate(TRT = fct_relevel(TRT, "Control", "C", "C + B",
+                           "C + S", "C + S + B", 'Reference')) %>%
+  mutate(TN = Total_N*10) # converts to g/kg 
+
+TN_Summary <- summarySE(TNData, measurevar="TN", groupvars=c("TRT"))
+
+TNMax <- TNData %>%
+  dplyr::group_by(TRT) %>%
+  dplyr::summarise(MaxTN = max(TN)) 
+
+TNMin <- TNData %>%
+  dplyr::group_by(TRT) %>%
+  dplyr::summarise(MinTN = min(TN)) 
+
+MedianTN <- TNData %>%
+  dplyr::group_by(TRT) %>%
+  dplyr::summarise(MedianTN = median(TN)) 
 
