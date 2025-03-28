@@ -2,7 +2,7 @@
 ###                        Principle Component Analysis                      ###
 ###                          EPA-Funded Soil Data                            ###
 ###                        Code by: Ashlynn N. Smith                         ###
-###                           USEPA Project Number:                          ###
+###                   USEPA Project Number: GC-00D80521                      ###
 ###    Joint Project between Atlanta Botanical Garden & University of FL     ###
 ################################################################################
 
@@ -26,6 +26,13 @@ library(ggfortify)
 library(Factoshiny)
 library(ggplot2)
 library(PCAtest)
+
+
+## package citations
+citation("princomp")
+citation("PCAtest")
+citation("ggplot2")
+citation("ggvegan")
 
 ################ Call in Clean Data ################## 
 
@@ -215,7 +222,7 @@ TREATMENT <- ggplot(data=JoinedData) +
         axis.text.x = element_text(size=12), 
         axis.title = element_text(size=14),
         legend.title = element_text(size=12),
-        legend.position=c(0.95,0.95),
+        legend.position=c(0.85,0.85),
         legend.justification=c("right", "top"),
         legend.direction="vertical") +
   geom_vline(xintercept = 0) +

@@ -2,7 +2,7 @@
 ###                   Generalized Linear Mixed Models                        ###
 ###                          EPA-Funded Soil Data                            ###
 ###                        Code by: Ashlynn N. Smith                         ###
-###                           USEPA Project Number:                          ###
+###                     USEPA Project Number: GC-00D80521                    ###
 ###    Joint Project between Atlanta Botanical Garden & University of FL     ###
 ################################################################################
 
@@ -283,7 +283,7 @@ TK_Tibble3 <- as_tibble(summary(TRTPos_Pairs_K))
 CI_Letters_TK_3 <- cld(PairsKMod_3, Letters=letters, sort=TRUE, decreasing=TRUE)
 
 ############################### Cl #####################################
-
+## Ended up eliminating this variable from publication after talking with analysis lab 
 ############ Visualize the Cl Data ##### Decide on Outliers NOW ##########
 
 # Original Data 
@@ -315,6 +315,7 @@ plot(fitted(ClMod2), residuals(ClMod2))
 
 ##################### Cl Model Results  ##########################################
 ## May need to round values and use a poisson distribution #######################
+## Ended up eliminating this variable from publication after talking with analysis lab 
 
 Anova(ClMod2, type="III")
 

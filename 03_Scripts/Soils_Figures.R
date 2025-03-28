@@ -1,8 +1,14 @@
 ################################################################################
-############# Graphing Results from Soil GLMM Results ##########################
+################################################################################
+###                        Graphing Soil GLMM Results                        ###
+###                          EPA-Funded Soil Data                            ###
+###                        Code by: Ashlynn N. Smith                         ###
+###                     USEPA Project Number: GC-00D80521                    ###
+###    Joint Project between Atlanta Botanical Garden & University of FL     ###
+################################################################################
 
 
-# Library 
+# Load Packages from the Library 
 
 library(ggplot2)
 library(ggpubr)
@@ -447,19 +453,19 @@ BD <- ggplot(BD_Summary, aes(x=Time, y=BulkDensity, group = Treatment, color=Tre
 
 ################## pH  ######################################################  
 pHData <- SoilsData %>%
-  drop_na(pHw) %>%
+  drop_na(pH) %>%
   mutate(Treatment = fct_relevel(Treatment, "Control", "Cleared", "Cleared + Burned",
                                  "Cleared + Scraped", "Cleared + Scraped + Burned"))
 
-pH_Summary <- summarySE(pHData, measurevar="pHw", groupvars=c("Treatment", "Year")) %>%
+pH_Summary <- summarySE(pHData, measurevar="pH", groupvars=c("Treatment", "Year")) %>%
   mutate(Time = case_when(Year == '2022' ~ '2-Weeks Post Treatment (2022)',
                           Year == '2023' ~ '1-Year Post Treatment (2023)',
                           Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
   mutate(Time = fct_relevel(Time, "2-Weeks Post Treatment (2022)", "1-Year Post Treatment (2023)",
                             "2-Years Post Treatment (2024)"))
 
-pH <- ggplot(pH_Summary, aes(x=Time, y=pHw, group = Treatment, colour=Treatment))+ 
-  geom_errorbar(aes(ymin=pHw-se, ymax=pHw+se), width=.2, 
+pH <- ggplot(pH_Summary, aes(x=Time, y=pH, group = Treatment, colour=Treatment))+ 
+  geom_errorbar(aes(ymin=pH-se, ymax=pH+se), width=.2, 
                 position=position_dodge(0.0)) +
   geom_line(linewidth=1) + 
   geom_point(aes(shape=Treatment), size=4)+
@@ -482,7 +488,7 @@ pH <- ggplot(pH_Summary, aes(x=Time, y=pHw, group = Treatment, colour=Treatment)
 
 # arrange the six plots in 2 rows
 prow <- plot_grid(
-  TP + theme(legend.position=c(0.7,0.8)),
+  TP + theme(legend.position=c(0.74,0.77)),
   TK + theme(legend.position="none"),
   BD + theme(legend.position="none"),
   pH + theme(legend.position="none"),
