@@ -276,235 +276,248 @@ ggdraw(FigX)
 
 
 ########################### Treatment x Year ####################################
-################## Total_N ######################################################
 
-## Remove row if there is an NA Value in the "Total_N" column 
-TNData <- SoilsData %>%
-  drop_na(Total_N) %>%
-  mutate(Treatment = fct_relevel(Treatment, "Control", "Cleared", "Cleared + Burned",
-                                 "Cleared + Scraped", "Cleared + Scraped + Burned"))
-
-TN_Summary <- summarySE(TNData, measurevar="Total_N", groupvars=c("Treatment", "Year")) %>%
-  mutate(Time = case_when(Year == '2022' ~ '2-Weeks Post Treatment (2022)',
-                       Year == '2023' ~ '1-Year Post Treatment (2023)',
-                       Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
-  mutate(Time = fct_relevel(Time, "2-Weeks Post Treatment (2022)", "1-Year Post Treatment (2023)",
-                            "2-Years Post Treatment (2024)"))
-
-TN <- ggplot(TN_Summary, aes(x=Time, y=Total_N*10, group = Treatment, color=Treatment))+ 
-    geom_errorbar(aes(ymin=Total_N*10-se*10, ymax=Total_N*10+se*10), width=.2, 
-                  position=position_dodge(0.0)) +
-    geom_line(linewidth=1) + 
-    geom_point(aes(shape=Treatment), size=4)+
-    labs(x="Time", y = "Total N (g/kg)")+
-    theme_classic() + 
-    scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
-    scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
-    theme(panel.border = element_blank(), 
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        axis.line = element_line(colour = "black"),
-        axis.text = element_text(size = 11),
-        axis.text.x = element_blank(), 
-        axis.title.y = element_text(size = 11),
-        axis.title.x = element_blank(),
-        legend.title = element_text(size=14),
-        legend.position="none") 
-  
-  
 ################## Total_P ######################################################  
 TPData <- SoilsData %>%
   drop_na(Total_P) %>%
-  mutate(Treatment = fct_relevel(Treatment, "Control", "Cleared", "Cleared + Burned",
-                                 "Cleared + Scraped", "Cleared + Scraped + Burned"))
+  mutate(TRT = fct_relevel(TRT, "Control","Reference", "C", "C + B",
+                                 "C + S", "C + S + B"))
 
-TP_Summary <- summarySE(TPData, measurevar="Total_P", groupvars=c("Treatment", "Year")) %>%
+TP_Summary <- summarySE(TPData, measurevar="Total_P", groupvars=c("TRT", "Year")) %>%
   mutate(Time = case_when(Year == '2022' ~ '2-Weeks Post Treatment (2022)',
                           Year == '2023' ~ '1-Year Post Treatment (2023)',
                           Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
   mutate(Time = fct_relevel(Time, "2-Weeks Post Treatment (2022)", "1-Year Post Treatment (2023)",
                             "2-Years Post Treatment (2024)"))
 
-TP <- ggplot(TP_Summary, aes(x=Time, y=Total_P, group = Treatment, color=Treatment))+ 
+#TP <- ggplot(TP_Summary, aes(x=Time, y=Total_P, group = Treatment, color=Treatment))+ 
+  #geom_errorbar(aes(ymin=Total_P-se, ymax=Total_P+se), width=.2, 
+                #position=position_dodge(0.0)) +
+  #geom_line(linewidth=1) + 
+  #geom_point(aes(shape=Treatment), size=4)+
+  #labs(x="Time", y = "Total P (mg/kg)")+
+  #theme_classic() + 
+  #scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
+  #scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
+  #theme(panel.border = element_blank(), 
+        #panel.grid.major = element_blank(),
+        #panel.grid.minor = element_blank(),
+        #axis.line = element_line(colour = "black"),
+        #axis.text = element_text(size = 11),
+        #axis.text.x = element_blank(), 
+        #axis.title.y = element_text(size = 11),
+        #axis.title.x = element_blank(),
+        #legend.title = element_text(size=14),
+        #legend.position=c(0.7,0.8)) 
+
+TP2 <- ggplot(TP_Summary, aes(x=TRT, y=Total_P, group = Time))+ 
   geom_errorbar(aes(ymin=Total_P-se, ymax=Total_P+se), width=.2, 
-                position=position_dodge(0.0)) +
-  geom_line(linewidth=1) + 
-  geom_point(aes(shape=Treatment), size=4)+
-  labs(x="Time", y = "Total P (mg/kg)")+
+                position=position_dodge(0.5)) +
+  geom_point(aes(x=TRT, y=Total_P, shape = Time), size=3, 
+             position=position_dodge(0.5)) +
+  labs(x="Treatment", y = "Total P (mg/kg)")+
+  geom_rect(aes(ymin=58.75,ymax=165, xmin=0, xmax=Inf), fill="bisque4", alpha=0.01)+
+  geom_rect(aes(ymin=22.05,ymax=81.81, xmin=0, xmax=Inf), fill="lightgreen", alpha=0.01)+
   theme_classic() + 
-  scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
-  scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
   theme(panel.border = element_blank(), 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.text = element_text(size = 11),
+        axis.text = element_text(size = 14),
         axis.text.x = element_blank(), 
-        axis.title.y = element_text(size = 11),
+        axis.title.y = element_text(size = 12),
         axis.title.x = element_blank(),
-        legend.title = element_text(size=14),
-        legend.position=c(0.7,0.8)) 
-
+        legend.title = element_text(size=20))
 
 ################## Total_K ######################################################  
 TKData <- SoilsData %>%
   drop_na(Total_K) %>%
-  mutate(Treatment = fct_relevel(Treatment, "Control", "Cleared", "Cleared + Burned",
-                                 "Cleared + Scraped", "Cleared + Scraped + Burned"))
+  mutate(TRT = fct_relevel(TRT, "Control","Reference", "C", "C + B",
+                           "C + S", "C + S + B"))
 
-TK_Summary <- summarySE(TPData, measurevar="Total_K", groupvars=c("Treatment", "Year")) %>%
+TK_Summary <- summarySE(TPData, measurevar="Total_K", groupvars=c("TRT", "Year")) %>%
   mutate(Time = case_when(Year == '2022' ~ '2-Weeks Post Treatment (2022)',
                           Year == '2023' ~ '1-Year Post Treatment (2023)',
                           Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
   mutate(Time = fct_relevel(Time, "2-Weeks Post Treatment (2022)", "1-Year Post Treatment (2023)",
                             "2-Years Post Treatment (2024)"))
 
-TK <- ggplot(TK_Summary, aes(x=Time, y=Total_K, group = Treatment, color=Treatment))+ 
+#TK <- ggplot(TK_Summary, aes(x=Time, y=Total_K, group = Treatment, color=Treatment))+ 
+ # geom_errorbar(aes(ymin=Total_K-se, ymax=Total_K+se), width=.2, 
+  #              position=position_dodge(0.0)) +
+  #geom_line(linewidth=1) + 
+  #geom_point(aes(shape=Treatment), size=4)+
+  #labs(x="Time", y = "Total K (mg/kg)")+
+  #theme_classic() + 
+  #scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
+  #scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
+  #theme(panel.border = element_blank(), 
+   #     panel.grid.major = element_blank(),
+    #    panel.grid.minor = element_blank(),
+     #   axis.line = element_line(colour = "black"),
+      #  axis.text = element_text(size = 11),
+       # axis.text.x = element_blank(), 
+      #  axis.title.y = element_text(size = 11),
+      #  axis.title.x = element_blank(),
+      #  legend.title = element_text(size=14),
+      #  legend.position="none") 
+
+
+TK2 <- ggplot(TK_Summary, aes(x=TRT, y=Total_K, group = Time))+ 
   geom_errorbar(aes(ymin=Total_K-se, ymax=Total_K+se), width=.2, 
-                position=position_dodge(0.0)) +
-  geom_line(linewidth=1) + 
-  geom_point(aes(shape=Treatment), size=4)+
-  labs(x="Time", y = "Total K (mg/kg)")+
+                position=position_dodge(0.5)) +
+  geom_point(aes(x=TRT, y=Total_K, shape = Time), size=3, 
+             position=position_dodge(0.5)) +
+  labs(x="Treatment", y = "Total K (mg/kg)")+
+  geom_rect(aes(ymin=89.76,ymax=331.13, xmin=0, xmax=Inf), fill="bisque4", alpha=0.01)+
+  geom_rect(aes(ymin=45.92,ymax=101.36, xmin=0, xmax=Inf), fill="lightgreen", alpha=0.01)+
   theme_classic() + 
-  scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
-  scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
   theme(panel.border = element_blank(), 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.text = element_text(size = 11),
+        axis.text = element_text(size = 14),
         axis.text.x = element_blank(), 
-        axis.title.y = element_text(size = 11),
+        axis.title.y = element_text(size = 12),
         axis.title.x = element_blank(),
-        legend.title = element_text(size=14),
-        legend.position="none") 
+        legend.title = element_text(size=20))
 
-################## Cl ######################################################  
-ClData <- SoilsData %>%
-  drop_na(Cl) %>%
-  mutate(Treatment = fct_relevel(Treatment, "Control", "Cleared", "Cleared + Burned",
-                                 "Cleared + Scraped", "Cleared + Scraped + Burned"))
-
-Cl_Summary <- summarySE(ClData, measurevar="Cl", groupvars=c("Treatment", "Year")) %>%
-  mutate(Time = case_when(Year == '2022' ~ '2-Weeks Post Treatment (2022)',
-                          Year == '2023' ~ '1-Year Post Treatment (2023)',
-                          Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
-  mutate(Time = fct_relevel(Time, "2-Weeks Post Treatment (2022)", "1-Year Post Treatment (2023)",
-                            "2-Years Post Treatment (2024)"))
-
-Cl <- ggplot(Cl_Summary, aes(x=Time, y=Cl, group = Treatment, color=Treatment))+ 
-  geom_errorbar(aes(ymin=Cl-se, ymax=Cl+se), width=.2, 
-                position=position_dodge(0.0)) +
-  geom_line(linewidth=1) + 
-  geom_point(aes(shape=Treatment), size=4)+
-  labs(x="Time", y = "Cl (mg/kg)")+
-  theme_classic() + 
-  scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
-  scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
-  scale_x_discrete(labels = function(x) 
-    stringr::str_wrap(x, width = 15))+
-  theme(panel.border = element_blank(), 
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        axis.line = element_line(colour = "black"),
-        axis.text = element_text(size = 11),
-        axis.text.x = element_text(size = 10), 
-        axis.title.x = element_blank(),
-        axis.title.y = element_text(size= 11),
-        legend.title = element_text(size=14),
-        legend.position="none") 
 
 ################## Bulk Density  ######################################################  
 BDData <- SoilsData %>%
   drop_na(BulkDensity) %>%
-  mutate(Treatment = fct_relevel(Treatment, "Control", "Cleared", "Cleared + Burned",
-                                 "Cleared + Scraped", "Cleared + Scraped + Burned"))
+  mutate(TRT = fct_relevel(TRT, "Control","Reference", "C", "C + B",
+                           "C + S", "C + S + B"))
 max(BDData$BulkDensity)
 min(BDData$BulkDensity)
 
-BD_Summary <- summarySE(BDData, measurevar="BulkDensity", groupvars=c("Treatment", "Year")) %>%
+BD_Summary <- summarySE(BDData, measurevar="BulkDensity", groupvars=c("TRT", "Year")) %>%
   mutate(Time = case_when(Year == '2022' ~ '2-Weeks Post Treatment (2022)',
                           Year == '2023' ~ '1-Year Post Treatment (2023)',
                           Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
   mutate(Time = fct_relevel(Time, "2-Weeks Post Treatment (2022)", "1-Year Post Treatment (2023)",
                             "2-Years Post Treatment (2024)"))
 
-BD <- ggplot(BD_Summary, aes(x=Time, y=BulkDensity, group = Treatment, color=Treatment))+ 
+# BD <- ggplot(BD_Summary, aes(x=Time, y=BulkDensity, group = Treatment, color=Treatment))+ 
+#  geom_errorbar(aes(ymin=BulkDensity-se, ymax=BulkDensity+se), width=.2, 
+#                position=position_dodge(0.0)) +
+#  geom_line(linewidth=1) + 
+#  geom_point(aes(shape=Treatment), size=4)+
+#  labs(x="Time", y = "Bulk Density (g/cm3)")+
+#  theme_classic() + 
+#  scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
+#  scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
+#  scale_x_discrete(labels = function(x) 
+#    stringr::str_wrap(x, width = 15))+
+#  theme(panel.border = element_blank(), 
+#        panel.grid.major = element_blank(),
+#        panel.grid.minor = element_blank(),
+#        axis.line = element_line(colour = "black"),
+#        axis.text = element_text(size = 11),
+#        axis.text.x = element_text(size = 10), 
+#        axis.title.x = element_blank(),
+#        axis.title.y = element_text(size= 11),
+#        legend.title = element_text(size=14),
+#        legend.position="none") 
+
+BD2 <- ggplot(BD_Summary, aes(x=TRT, y=BulkDensity, group = Time))+ 
   geom_errorbar(aes(ymin=BulkDensity-se, ymax=BulkDensity+se), width=.2, 
-                position=position_dodge(0.0)) +
-  geom_line(linewidth=1) + 
-  geom_point(aes(shape=Treatment), size=4)+
-  labs(x="Time", y = "Bulk Density (g/cm3)")+
+                position=position_dodge(0.5)) +
+  geom_point(aes(x=TRT, y=BulkDensity, shape = Time), size=3, 
+             position=position_dodge(0.5)) +
+  labs(x="Treatment", y = "Bulk Density (g/cm3)")+
+  geom_rect(aes(ymin=0.23,ymax=0.72, xmin=0, xmax=Inf), fill="bisque4", alpha=0.01)+
+  geom_rect(aes(ymin=0.77,ymax=1.23, xmin=0, xmax=Inf), fill="lightgreen", alpha=0.01)+
   theme_classic() + 
-  scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
-  scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
-  scale_x_discrete(labels = function(x) 
-    stringr::str_wrap(x, width = 15))+
   theme(panel.border = element_blank(), 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.text = element_text(size = 11),
-        axis.text.x = element_text(size = 10), 
+        axis.text = element_text(size = 14),
+        axis.text.x = element_blank(), 
+        axis.title.y = element_text(size = 12),
         axis.title.x = element_blank(),
-        axis.title.y = element_text(size= 11),
-        legend.title = element_text(size=14),
-        legend.position="none") 
+        legend.title = element_text(size=20))
+
 
 ################## pH  ######################################################  
 pHData <- SoilsData %>%
   drop_na(pH) %>%
-  mutate(Treatment = fct_relevel(Treatment, "Control", "Cleared", "Cleared + Burned",
-                                 "Cleared + Scraped", "Cleared + Scraped + Burned"))
+  mutate(TRT = fct_relevel(TRT, "Control","Reference", "C", "C + B",
+                           "C + S", "C + S + B"))
 
-pH_Summary <- summarySE(pHData, measurevar="pH", groupvars=c("Treatment", "Year")) %>%
+pH_Summary <- summarySE(pHData, measurevar="pH", groupvars=c("TRT", "Year")) %>%
   mutate(Time = case_when(Year == '2022' ~ '2-Weeks Post Treatment (2022)',
                           Year == '2023' ~ '1-Year Post Treatment (2023)',
                           Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
   mutate(Time = fct_relevel(Time, "2-Weeks Post Treatment (2022)", "1-Year Post Treatment (2023)",
                             "2-Years Post Treatment (2024)"))
 
-pH <- ggplot(pH_Summary, aes(x=Time, y=pH, group = Treatment, colour=Treatment))+ 
+# pH <- ggplot(pH_Summary, aes(x=Time, y=pH, group = Treatment, colour=Treatment))+ 
+#  geom_errorbar(aes(ymin=pH-se, ymax=pH+se), width=.2, 
+#                position=position_dodge(0.0)) +
+#  geom_line(linewidth=1) + 
+#  geom_point(aes(shape=Treatment), size=4)+
+#  labs(x="Time", y = "pH")+
+#  theme_classic() + 
+#  scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
+#  scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
+#  scale_x_discrete(labels = function(x) 
+#    stringr::str_wrap(x, width = 15))+
+#  theme(panel.border = element_blank(), 
+#        panel.grid.major = element_blank(),
+#        panel.grid.minor = element_blank(),
+#        axis.line = element_line(colour = "black"),
+#        axis.text = element_text(size = 11),
+#        axis.text.x = element_text(size = 10), 
+#        axis.title.x = element_blank(),
+#        axis.title.y = element_text(size= 11),
+#        legend.title = element_text(size=14),
+#        legend.position="none") 
+
+PH2 <- ggplot(pH_Summary, aes(x=TRT, y=pH, group = Time))+ 
   geom_errorbar(aes(ymin=pH-se, ymax=pH+se), width=.2, 
-                position=position_dodge(0.0)) +
-  geom_line(linewidth=1) + 
-  geom_point(aes(shape=Treatment), size=4)+
-  labs(x="Time", y = "pH")+
+                position=position_dodge(0.5)) +
+  geom_point(aes(x=TRT, y=pH, shape = Time), size=3, 
+             position=position_dodge(0.5)) +
+  labs(x="Treatment", y = "pH")+
+  geom_rect(aes(ymin=3.86,ymax=4.13, xmin=0, xmax=Inf), fill="bisque4", alpha=0.01)+
+  geom_rect(aes(ymin=4.14,ymax=4.76, xmin=0, xmax=Inf), fill="lightgreen", alpha=0.01)+
   theme_classic() + 
-  scale_color_manual(values=c('black','lightcyan2','lightcyan3','lightcyan4','darkcyan','goldenrod2')) +
-  scale_shape_manual(values=c(4, 18, 15, 16, 17, 8)) +
-  scale_x_discrete(labels = function(x) 
-    stringr::str_wrap(x, width = 15))+
   theme(panel.border = element_blank(), 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.text = element_text(size = 11),
-        axis.text.x = element_text(size = 10), 
+        axis.text = element_text(size = 14),
+        axis.text.x = element_text(size=16), 
+        axis.title.y = element_text(size = 12),
         axis.title.x = element_blank(),
-        axis.title.y = element_text(size= 11),
-        legend.title = element_text(size=14),
-        legend.position="none") 
+        legend.title = element_blank())
 
-# arrange the six plots in 2 rows
-prow <- plot_grid(
-  TP + theme(legend.position=c(0.74,0.77)),
-  TK + theme(legend.position="none"),
-  BD + theme(legend.position="none"),
-  pH + theme(legend.position="none"),
+
+##### Figure 3 ############## arrange the six plots in 2 rows
+Fig3 <- plot_grid(
+  TP2 + theme(legend.position=c(0.85,0.65)),
+  TK2 + theme(legend.position="none"),
+  BD2 + theme(legend.position="none"),
+  PH2 + theme(legend.position="none"),
     align = 'vh',
   labels = c("A", "B", "C","D"),
-  hjust = -1,
-  nrow = 2
+  hjust = -0.9,
+  vjust = 1.2,
+  nrow = 4
 )
-prow
+Fig3
 
 ################## Treatment x Position X Year #################################
 ########################### Fe #################################################
 FeData <- SoilsData %>%
   drop_na(Fe)
 
-Fe_Summary <- summarySE(FeData, measurevar="Fe", groupvars=c("Treatment","Position", "Year")) %>%
+Fe_Upper <- FeData %>%
+  filter(Position != "Bottom")
+  
+Fe_Up_Summary <- summarySE(Fe_Upper, measurevar="Fe", groupvars=c("Treatment","Position", "Year")) %>%
   mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
                           Year == '2023' ~ '1-Year Post Treatment (2023)',
                           Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
@@ -516,40 +529,103 @@ Fe_Summary <- summarySE(FeData, measurevar="Fe", groupvars=c("Treatment","Positi
                          Treatment == 'Cleared + Scraped' ~ 'C + S',
                          Treatment == 'Cleared + Scraped + Burned' ~ 'C + S + B',
                          Treatment == 'Reference' ~ 'Reference')) %>%
-  mutate(TRT = fct_relevel(TRT, "Control", "C", "C + B",
+  mutate(TRT = fct_relevel(TRT, "Control","Reference", "C", "C + B",
                                  "C + S", "C + S + B"))
 
-Fe_Summary <- Fe_Summary %>%
-    mutate(Letters = c("abcde","abcde","abc","ab","ab","ab","abcde","abcde","abcd","ab","ab","ab", "abcde",
-                       "abcde", "abcde", "ab", "ab", "ab", "de", "bcde", "de", "b", "ab", "a", 
-                       "e", "de", "cde", "ab", "ab", "ab", "ab", "a", "a", "ab", "ab", "ab"))
+#Fe_Summary <- Fe_Summary %>%
+ #   mutate(Letters = c("abcde","abcde","abc","ab","ab","ab","abcde","abcde","abcd","ab","ab","ab", "abcde",
+                      # "abcde", "abcde", "ab", "ab", "ab", "de", "bcde", "de", "b", "ab", "a", 
+                      # "e", "de", "cde", "ab", "ab", "ab", "ab", "a", "a", "ab", "ab", "ab"))
 
-Fe <- ggplot(Fe_Summary, aes(x=TRT, y=Fe, group=Time)) +
-  geom_col(aes(fill=Time),position = "dodge") + 
-  geom_errorbar(aes(ymin=Fe-se, ymax=Fe+se), width=.3, position=position_dodge(0.9)) +
-  geom_text(aes(y=Fe+se+10, label=Letters), position=position_dodge(0.9)) +
-  scale_fill_manual(values=c("lightcyan",'lightblue3','lightcyan4')) +
-  xlab("Restoration Treatment") +
-  ylab("Fe (mg/kg)") +
-  theme_bw() +
-  theme(panel.border = element_rect(color="black", fill=NA, size=1), 
+#Fe <- ggplot(Fe_Summary, aes(x=TRT, y=Fe, group=Time)) +
+ # geom_col(aes(fill=Time),position = "dodge") + 
+#  geom_errorbar(aes(ymin=Fe-se, ymax=Fe+se), width=.3, position=position_dodge(0.9)) +
+#  geom_text(aes(y=Fe+se+10, label=Letters), position=position_dodge(0.9)) +
+#  scale_fill_manual(values=c("lightcyan",'lightblue3','lightcyan4')) +
+#  xlab("Restoration Treatment") +
+#  ylab("Fe (mg/kg)") +
+#  theme_bw() +
+#  theme(panel.border = element_rect(color="black", fill=NA, size=1), 
+#        panel.grid.major = element_blank(),
+#        panel.grid.minor = element_blank(),
+#        axis.line = element_line(colour = "black"),
+#        axis.text.y = element_text(size = 16),
+#        axis.text.x = element_blank(), 
+#        axis.title.x = element_blank(),
+#        axis.title.y = element_text(size = 16, vjust = +3),
+#        legend.title=element_text(size=12), 
+#        legend.text=element_text(size=12)) +
+#  facet_wrap(~factor(Position, c("Upper", "Bottom"))) +
+#  theme(strip.text = element_text(size=12))
+
+Fe_Upper_2 <- ggplot(Fe_Up_Summary, aes(x=TRT, y=Fe, group = Time))+ 
+  geom_errorbar(aes(ymin=Fe-se, ymax=Fe+se), width=.2, 
+                position=position_dodge(0.5)) +
+  geom_point(aes(x=TRT, y=Fe, shape = Time), size=3, 
+             position=position_dodge(0.5)) +
+  labs(x="Treatment", y = "Fe (mg/kg)", title="Upper") +
+  scale_y_continuous(limits=c(10,375), breaks = seq(50,375, by = 50)) +
+  geom_rect(aes(ymin=50.4,ymax=275.3, xmin=0, xmax=Inf), fill="bisque4", alpha=0.01)+
+  geom_rect(aes(ymin=148.5,ymax=362.7, xmin=0, xmax=Inf), fill="lightgreen", alpha=0.01)+
+  theme_classic() + 
+  theme(panel.border = element_blank(), 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.text.y = element_text(size = 16),
+        axis.text = element_text(size = 14),
         axis.text.x = element_blank(), 
+        axis.title.y = element_text(size = 16),
         axis.title.x = element_blank(),
-        axis.title.y = element_text(size = 16, vjust = +3),
-        legend.title=element_text(size=12), 
-        legend.text=element_text(size=12)) +
-  facet_wrap(~factor(Position, c("Upper", "Bottom"))) +
-  theme(strip.text = element_text(size=12))
+        plot.title = element_text(size=24, hjust=0.5),
+        legend.title = element_text(size=16)) 
+
+Fe_Bottom <- FeData %>%
+  filter(Position != "Upper")
+
+Fe_B_Summary <- summarySE(Fe_Bottom, measurevar="Fe", groupvars=c("Treatment","Position", "Year")) %>%
+  mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
+                          Year == '2023' ~ '1-Year Post Treatment (2023)',
+                          Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
+  mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
+                            "2-Years Post Treatment (2024)")) %>%
+  mutate(TRT = case_when(Treatment == 'Control' ~ 'Control',
+                         Treatment == 'Cleared' ~ 'C',
+                         Treatment == 'Cleared + Burned' ~ 'C + B',
+                         Treatment == 'Cleared + Scraped' ~ 'C + S',
+                         Treatment == 'Cleared + Scraped + Burned' ~ 'C + S + B',
+                         Treatment == 'Reference' ~ 'Reference')) %>%
+  mutate(TRT = fct_relevel(TRT, "Control","Reference", "C", "C + B",
+                           "C + S", "C + S + B"))
+
+Fe_Bottom_2 <- ggplot(Fe_B_Summary, aes(x=TRT, y=Fe, group = Time))+ 
+  geom_errorbar(aes(ymin=Fe-se, ymax=Fe+se), width=.2, 
+                position=position_dodge(0.5)) +
+  geom_point(aes(x=TRT, y=Fe, shape = Time), size=3, 
+             position=position_dodge(0.5)) +
+  labs(x="Treatment", y = "Fe (mg/kg)", title="Bottom") +
+  scale_y_continuous(limits=c(10,375), breaks = seq(50,375, by = 50)) +
+  geom_rect(aes(ymin=96.2,ymax=365.4, xmin=0, xmax=Inf), fill="bisque4", alpha=0.01)+
+  geom_rect(aes(ymin=99.5,ymax=200.0, xmin=0, xmax=Inf), fill="lightgreen", alpha=0.01)+
+  theme_classic() + 
+  theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.text = element_text(size = 14),
+        axis.text.x = element_blank(), 
+        axis.title.y = element_blank(),
+        axis.title.x = element_blank(),
+        plot.title = element_text(size=24, hjust=0.5),
+        legend.title = element_text(size=16))
 
 ########################### Na #################################################
 NaData <- SoilsData %>%
   drop_na(Na)
 
-Na_Summary <- summarySE(NaData, measurevar="Na", groupvars=c("Treatment","Position", "Year")) %>%
+Na_Upper <- NaData %>%
+  filter(Position != "Bottom")
+
+Na_Up_Summary <- summarySE(Na_Upper, measurevar="Na", groupvars=c("Treatment","Position", "Year")) %>%
   mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
                           Year == '2023' ~ '1-Year Post Treatment (2023)',
                           Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
@@ -561,45 +637,109 @@ Na_Summary <- summarySE(NaData, measurevar="Na", groupvars=c("Treatment","Positi
                          Treatment == 'Cleared + Scraped' ~ 'C + S',
                          Treatment == 'Cleared + Scraped + Burned' ~ 'C + S + B',
                          Treatment == 'Reference' ~ 'Reference')) %>%
-  mutate(TRT = fct_relevel(TRT, "Control", "C", "C + B",
+  mutate(TRT = fct_relevel(TRT, "Control","Reference", "C", "C + B",
                            "C + S", "C + S + B"))
 
-Na_Summary <- Na_Summary %>%
-  mutate(Letters = c("a","ab","abc","a","ab","bc", "bcd","bcd","abcd","cde","bcd","bcde","defg", "bcd",
-                     "cdef", "bc", "bcd", "bc", "efg", "efg", "efg", "ef", "def", "def", "g", 
-                     "fg", "efg", "f", "def", "f", "bcdefg", "bcde", "bcdefg", "bcde", "bcdef", "bcde"))
+# Na_Summary <- Na_Summary %>%
+  # mutate(Letters = c("a","ab","abc","a","ab","bc", "bcd","bcd","abcd","cde","bcd","bcde","defg", "bcd",
+                   #  "cdef", "bc", "bcd", "bc", "efg", "efg", "efg", "ef", "def", "def", "g", 
+                   #  "fg", "efg", "f", "def", "f", "bcdefg", "bcde", "bcdefg", "bcde", "bcdef", "bcde"))
 
-Na <- ggplot(Na_Summary, aes(x=TRT, y=Na, group=Time)) +
-  geom_col(aes(fill=Time),position = "dodge") + 
-  geom_errorbar(aes(ymin=Na-se, ymax=Na+se), width=.3, position=position_dodge(0.9)) +
-  geom_text(aes(y=Na+se+2, label=Letters), position=position_dodge(0.9)) +
-  scale_fill_manual(values=c("lightcyan",'lightblue3','lightcyan4')) +
-  xlab("Restoration Treatment") +
-  ylab("Na (mg/kg)") +
-  theme_bw() +
-  theme(panel.border = element_rect(color="black", fill=NA, size=1), 
+#Na <- ggplot(Na_Summary, aes(x=TRT, y=Na, group=Time)) +
+  #geom_col(aes(fill=Time),position = "dodge") + 
+  #geom_errorbar(aes(ymin=Na-se, ymax=Na+se), width=.3, position=position_dodge(0.9)) +
+  #geom_text(aes(y=Na+se+2, label=Letters), position=position_dodge(0.9)) +
+  #scale_fill_manual(values=c("lightcyan",'lightblue3','lightcyan4')) +
+  #xlab("Restoration Treatment") +
+  #ylab("Na (mg/kg)") +
+  #theme_bw() +
+  #theme(panel.border = element_rect(color="black", fill=NA, size=1), 
+        #panel.grid.major = element_blank(),
+        #panel.grid.minor = element_blank(),
+        #axis.line = element_line(colour = "black"),
+        #axis.text.y = element_text(size = 16),
+        #axis.text.x = element_text(size = 14), 
+        #axis.title.x = element_text(size = 16, vjust = -1),
+        #axis.title.y = element_text(size = 16, vjust = +3),
+        #legend.title=element_text(size=12), 
+        #legend.text=element_text(size=12)) +
+  #facet_wrap(~factor(Position, c("Upper", "Bottom"))) +
+  #theme(strip.text = element_text(size=12))
+
+Na_Upper_2 <- ggplot(Na_Up_Summary, aes(x=TRT, y=Na, group = Time))+ 
+  geom_errorbar(aes(ymin=Na-se, ymax=Na+se), width=.2, 
+                position=position_dodge(0.5)) +
+  geom_point(aes(x=TRT, y=Na, shape = Time), size=3, 
+             position=position_dodge(0.5)) +
+  labs(x="Treatment", y = "Na (mg/kg)") +
+  scale_y_continuous(limits=c(5,60), breaks = seq(0,60, by = 10)) +
+  geom_rect(aes(ymin=21.8,ymax=53.6, xmin=0, xmax=Inf), fill="bisque4", alpha=0.01)+
+  geom_rect(aes(ymin=13.1,ymax=19.7, xmin=0, xmax=Inf), fill="lightgreen", alpha=0.01)+
+  theme_classic() + 
+  theme(panel.border = element_blank(), 
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         axis.line = element_line(colour = "black"),
-        axis.text.y = element_text(size = 16),
+        axis.text = element_text(size = 14),
         axis.text.x = element_text(size = 14), 
-        axis.title.x = element_text(size = 16, vjust = -1),
-        axis.title.y = element_text(size = 16, vjust = +3),
-        legend.title=element_text(size=12), 
-        legend.text=element_text(size=12)) +
-  facet_wrap(~factor(Position, c("Upper", "Bottom"))) +
-  theme(strip.text = element_text(size=12))
+        axis.title.y = element_text(size = 16),
+        axis.title.x = element_blank(),
+        plot.title = element_blank(),
+        legend.title = element_text(size=16)) 
 
-# arrange the six plots in 2 rows
-prow2 <- plot_grid(
-  Fe + theme(legend.position=c(0.91,0.82)),
-  Na + theme(legend.position="none"),
+
+Na_Bottom <- NaData %>%
+  filter(Position != "Upper")
+
+Na_B_Summary <- summarySE(Na_Bottom, measurevar="Na", groupvars=c("Treatment","Position", "Year")) %>%
+  mutate(Time = case_when(Year == '2022' ~ 'Initial (2022)',
+                          Year == '2023' ~ '1-Year Post Treatment (2023)',
+                          Year == '2024' ~ '2-Years Post Treatment (2024)')) %>%
+  mutate(Time = fct_relevel(Time, "Initial (2022)", "1-Year Post Treatment (2023)",
+                            "2-Years Post Treatment (2024)")) %>%
+  mutate(TRT = case_when(Treatment == 'Control' ~ 'Control',
+                         Treatment == 'Cleared' ~ 'C',
+                         Treatment == 'Cleared + Burned' ~ 'C + B',
+                         Treatment == 'Cleared + Scraped' ~ 'C + S',
+                         Treatment == 'Cleared + Scraped + Burned' ~ 'C + S + B',
+                         Treatment == 'Reference' ~ 'Reference')) %>%
+  mutate(TRT = fct_relevel(TRT, "Control","Reference", "C", "C + B",
+                           "C + S", "C + S + B"))
+
+
+Na_Bottom_2 <- ggplot(Na_B_Summary, aes(x=TRT, y=Na, group = Time))+ 
+  geom_errorbar(aes(ymin=Na-se, ymax=Na+se), width=.2, 
+                position=position_dodge(0.5)) +
+  geom_point(aes(x=TRT, y=Na, shape = Time), size=3, 
+             position=position_dodge(0.5)) +
+  labs(x="Treatment", y = "Na (mg/kg)") +
+  scale_y_continuous(limits=c(5,60), breaks = seq(0,60, by = 10)) +
+  geom_rect(aes(ymin=26.4,ymax=59.5, xmin=0, xmax=Inf), fill="bisque4", alpha=0.01)+
+  geom_rect(aes(ymin=14.7,ymax=22.3, xmin=0, xmax=Inf), fill="lightgreen", alpha=0.01)+
+  theme_classic() + 
+  theme(panel.border = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.line = element_line(colour = "black"),
+        axis.text = element_text(size = 14),
+        axis.text.x = element_text(size = 14), 
+        axis.title.y = element_blank(),
+        axis.title.x = element_blank(),
+        plot.title = element_blank(),
+        legend.title = element_text(size=16)) 
+
+# arrange the 4 plots in 2 rows
+Fig4 <- plot_grid(
+  Fe_Upper_2 + theme(legend.position="none"),
+  Fe_Bottom_2 + theme(legend.position=c(-0.32,0.65)),
+  Na_Upper_2 + theme(legend.position="none"),
+  Na_Bottom_2 + theme(legend.position="none"),
   align = 'vh',
-  labels = c("A", "B"),
+  labels = c("A","","B", ""),
   hjust = -1,
   nrow = 2
 )
-prow2
+Fig4
 
 
 ########################### Position x Year  ####################################
